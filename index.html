@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GuÌa Interactiva de Juegos de Mesa</title>
+    <title>Gu√≠a Interactiva de Juegos de Mesa</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -12,8 +12,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
     
     <!-- Chosen Palette: Neon Nocturne (Slate, Violet, Cyan) -->
-    <!-- Application Structure Plan: He diseÒado una SPA tipo dashboard interactivo. En lugar de una lista est·tica, la aplicaciÛn permite al usuario explorar activamente las recomendaciones. La estructura se centra en el usuario y su tarea (encontrar un juego), con filtros prominentes para complejidad, jugadores, tiempo y recomendador. Esta arquitectura es superior a la del informe lineal porque facilita la comparaciÛn directa y el descubrimiento basado en criterios especÌficos. El flujo es simple: el usuario ajusta los filtros y el contenido (gr·ficos y tarjetas de juegos) se actualiza al instante, proporcionando una experiencia fluida y reactiva. -->
-    <!-- Visualization & Content Choices: 1) Tarjetas de Juego Interactivas (HTML/Tailwind): Presenta toda la informaciÛn de cada juego de forma organizada. Se actualizan con JS. Es la forma m·s clara de mostrar los detalles. 2) Filtros (HTML/JS): Permiten al usuario reducir el universo de juegos a sus necesidades especÌficas. Son el n˙cleo de la interactividad. 3) Gr·fico de Burbujas (Chart.js/Canvas): Visualiza la relaciÛn entre Tiempo de Juego y N∫ M·ximo de Jugadores, con el color indicando la complejidad. Permite identificar r·pidamente juegos en un 'espacio' determinado (ej. cortos y para muchos jugadores). 4) Gr·fico de Barras (Chart.js/Canvas): Muestra cu·ntos juegos recomendÛ cada persona, dando una idea r·pida de quiÈnes son los principales contribuidores. -->
+    <!-- Application Structure Plan: He dise√±ado una SPA tipo dashboard interactivo. En lugar de una lista est√°tica, la aplicaci√≥n permite al usuario explorar activamente las recomendaciones. La estructura se centra en el usuario y su tarea (encontrar un juego), con filtros prominentes para complejidad, jugadores, tiempo y recomendador. Esta arquitectura es superior a la del informe lineal porque facilita la comparaci√≥n directa y el descubrimiento basado en criterios espec√≠ficos. El flujo es simple: el usuario ajusta los filtros y el contenido (gr√°ficos y tarjetas de juegos) se actualiza al instante, proporcionando una experiencia fluida y reactiva. -->
+    <!-- Visualization & Content Choices: 1) Tarjetas de Juego Interactivas (HTML/Tailwind): Presenta toda la informaci√≥n de cada juego de forma organizada. Se actualizan con JS. Es la forma m√°s clara de mostrar los detalles. 2) Filtros (HTML/JS): Permiten al usuario reducir el universo de juegos a sus necesidades espec√≠ficas. Son el n√∫cleo de la interactividad. 3) Gr√°fico de Burbujas (Chart.js/Canvas): Visualiza la relaci√≥n entre Tiempo de Juego y N¬∫ M√°ximo de Jugadores, con el color indicando la complejidad. Permite identificar r√°pidamente juegos en un 'espacio' determinado (ej. cortos y para muchos jugadores). 4) Gr√°fico de Barras (Chart.js/Canvas): Muestra cu√°ntos juegos recomend√≥ cada persona, dando una idea r√°pida de qui√©nes son los principales contribuidores. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 
     <style>
@@ -94,8 +94,8 @@
     <div class="container mx-auto p-4 md:p-8">
         
         <header class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-bold text-violet-400 mb-2">GUÕA INTERACTIVA DE JUEGOS</h1>
-            <p class="text-slate-400 max-w-3xl mx-auto">Resumen interactivo de las recomendaciones del grupo. Filtra y encuentra tu prÛxima obsesiÛn.</p>
+            <h1 class="text-4xl md:text-5xl font-bold text-violet-400 mb-2">GU√çA INTERACTIVA DE JUEGOS</h1>
+            <p class="text-slate-400 max-w-3xl mx-auto">Resumen interactivo de las recomendaciones del grupo. Filtra y encuentra tu pr√≥xima obsesi√≥n.</p>
         </header>
 
         <main>
@@ -104,12 +104,12 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     
                     <div>
-                        <label for="players" class="block text-sm font-semibold text-slate-400 mb-2">N∫ de Jugadores</label>
+                        <label for="players" class="block text-sm font-semibold text-slate-400 mb-2">N¬∫ de Jugadores</label>
                         <input type="number" id="players" min="1" max="12" placeholder="Ej: 4" class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg text-slate-200 focus:ring-2 focus:ring-violet-500 focus:border-violet-500">
                     </div>
 
                     <div>
-                        <label for="time" class="block text-sm font-semibold text-slate-400 mb-2">Tiempo M·x. (min)</label>
+                        <label for="time" class="block text-sm font-semibold text-slate-400 mb-2">Tiempo M√°x. (min)</label>
                         <input type="number" id="time" min="20" step="10" placeholder="Ej: 90" class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg text-slate-200 focus:ring-2 focus:ring-violet-500 focus:border-violet-500">
                     </div>
                     
@@ -117,7 +117,7 @@
                         <label class="block text-sm font-semibold text-slate-400 mb-2">Complejidad</label>
                         <div id="complexity-filter" class="flex flex-wrap gap-2">
                             <button data-filter="Todos" class="filter-btn active py-2 px-4 rounded-lg">Todos</button>
-                            <button data-filter="facil" class="filter-btn text-slate-300 py-2 px-4 rounded-lg">F·cil</button>
+                            <button data-filter="facil" class="filter-btn text-slate-300 py-2 px-4 rounded-lg">F√°cil</button>
                             <button data-filter="medio" class="filter-btn text-slate-300 py-2 px-4 rounded-lg">Medio</button>
                             <button data-filter="avanzado" class="filter-btn text-slate-300 py-2 px-4 rounded-lg">Avanzado</button>
                         </div>
@@ -126,8 +126,8 @@
             </section>
             
             <section id="visualizations" class="mb-12">
-                <h2 class="text-2xl font-bold mb-6 text-center text-slate-200">DATOS T¡CTICOS</h2>
-                 <p class="text-slate-400 max-w-3xl mx-auto text-center mb-8">El radar de juegos se actualiza con tus filtros. Analiza el terreno de juego: ømuchos juegos largos y complejos? øQuiÈn es el gur˙ de los juegos f·ciles? La exploraciÛn visual te dar· la ventaja.</p>
+                <h2 class="text-2xl font-bold mb-6 text-center text-slate-200">DATOS T√ÅCTICOS</h2>
+                 <p class="text-slate-400 max-w-3xl mx-auto text-center mb-8">El radar de juegos se actualiza con tus filtros. Analiza el terreno de juego: ¬ømuchos juegos largos y complejos? ¬øQui√©n es el gur√∫ de los juegos f√°ciles? La exploraci√≥n visual te dar√° la ventaja.</p>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <div class="bg-slate-800/50 border border-slate-700 p-6 rounded-xl shadow-lg">
                         <h3 class="text-xl font-semibold mb-2 text-center text-slate-200">Mapa de Tiempo vs. Jugadores</h3>
@@ -154,12 +154,12 @@
                         <p>No se encontraron juegos que coincidan con tus filtros.</p>
                     </div>
                      <div id="error-message" class="hidden col-span-full text-center p-8 text-red-400">
-                        <p>Error al cargar los juegos desde la base de datos. IntÈntalo de nuevo m·s tarde.</p>
+                        <p>Error al cargar los juegos desde la base de datos. Int√©ntalo de nuevo m√°s tarde.</p>
                     </div>
                     <div id="rls-tip" class="hidden col-span-full text-center p-8 text-amber-400 bg-amber-900/20 rounded-lg border border-amber-600">
                         <h3 class="font-bold text-lg mb-2">No se han cargado datos</h3>
-                        <p>Parece que no se ha podido leer ning˙n juego de la base de datos. La causa m·s com˙n es la <strong>Seguridad a Nivel de Fila (RLS)</strong>.</p>
-                        <p class="mt-2"><strong>SoluciÛn r·pida:</strong> Ve a tu panel de Supabase, entra en "Authentication" -> "Policies", selecciona tu tabla "juegos" y crea una nueva polÌtica para la acciÛn `SELECT` que permita el acceso a todo el mundo (usando `true` en la expresiÛn).</p>
+                        <p>Parece que no se ha podido leer ning√∫n juego de la base de datos. La causa m√°s com√∫n es la <strong>Seguridad a Nivel de Fila (RLS)</strong>.</p>
+                        <p class="mt-2"><strong>Soluci√≥n r√°pida:</strong> Ve a tu panel de Supabase, entra en "Authentication" -> "Policies", selecciona tu tabla "juegos" y crea una nueva pol√≠tica para la acci√≥n `SELECT` que permita el acceso a todo el mundo (usando `true` en la expresi√≥n).</p>
                     </div>
                 </div>
             </section>
@@ -210,7 +210,7 @@
                     }
                     
                     const opinionsHTML = opinions.map(op => `
-                        <p class="text-sm text-slate-400 italic">ì${op.quote || ''}î <span class="font-semibold not-italic text-slate-300">- ${op.author || 'AnÛnimo'}</span></p>
+                        <p class="text-sm text-slate-400 italic">‚Äú${op.quote || ''}‚Äù <span class="font-semibold not-italic text-slate-300">- ${op.author || 'An√≥nimo'}</span></p>
                     `).join('');
 
                     let recommendedBy = [];
@@ -233,8 +233,8 @@
                                 <span class="complexity-badge complexity-${game.complexity}">${game.complexity}</span>
                             </div>
                             <div class="flex items-center text-slate-400 text-sm mb-4 space-x-4">
-                                <span>?? ${game.players_min}-${game.players_max} Jug.</span>
-                                <span>? ${game.time_min === game.time_max ? game.time_max : `${game.time_min}-${game.time_max}`} min</span>
+                                <span>üéÆ ${game.players_min}-${game.players_max} Jug.</span>
+                                <span>‚è≥ ${game.time_min === game.time_max ? game.time_max : `${game.time_min}-${game.time_max}`} min</span>
                             </div>
                             <div class="space-y-2 mb-4">
                                 ${opinionsHTML}
@@ -317,8 +317,8 @@
                     data: { datasets: [] },
                     options: { ...chartOptions,
                         scales: {
-                            x: { title: { display: true, text: 'Tiempo M·ximo (min)', color: textColor }, ticks: { color: textColor }, grid: { color: gridColor } },
-                            y: { title: { display: true, text: 'M·ximo de Jugadores', color: textColor }, ticks: { color: textColor }, grid: { color: gridColor }, beginAtZero: true }
+                            x: { title: { display: true, text: 'Tiempo M√°ximo (min)', color: textColor }, ticks: { color: textColor }, grid: { color: gridColor } },
+                            y: { title: { display: true, text: 'M√°ximo de Jugadores', color: textColor }, ticks: { color: textColor }, grid: { color: gridColor }, beginAtZero: true }
                         },
                         plugins: { ...chartOptions.plugins,
                             tooltip: {
@@ -377,7 +377,7 @@
                 const sortedRecommenders = Object.entries(recommenderCounts).sort((a, b) => b[1] - a[1]);
                 recommenderChart.data.labels = sortedRecommenders.map(e => e[0]);
                 recommenderChart.data.datasets = [{
-                    label: 'N∫ de Recomendaciones',
+                    label: 'N¬∫ de Recomendaciones',
                     data: sortedRecommenders.map(e => e[1]),
                     backgroundColor: '#8b5cf6'
                 }];
