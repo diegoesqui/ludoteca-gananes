@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía Interactiva de Juegos de Mesa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="bg-slate-900 text-slate-300">
+
+    <div class="container mx-auto p-4 md:p-8">
+        
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-violet-400 mb-2">GUÍA INTERACTIVA DE JUEGOS</h1>
+            <p class="text-slate-400 max-w-3xl mx-auto">Resumen interactivo de las recomendaciones del grupo. Filtra y encuentra tu próxima obsesión.</p>
+        </header>
+
+        <main>
+            <section id="filters" class="bg-slate-800/50 border border-slate-700 p-6 rounded-xl shadow-lg mb-12 backdrop-filter backdrop-blur-sm">
+                <h2 class="text-2xl font-bold mb-6 text-center text-slate-200">ARSENAL DE FILTROS</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    
+                    <div>
+                        <label for="players" class="block text-sm font-semibold text-slate-400 mb-2">Nº de Jugadores</label>
+                        <input type="number" id="players" min="1" max="12" placeholder="Ej: 4" class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg text-slate-200 focus:ring-2 focus:ring-violet-500 focus:border-violet-500" aria-label="Número de jugadores">
+                    </div>
+
+                    <div>
+                        <label for="time" class="block text-sm font-semibold text-slate-400 mb-2">Tiempo Máx. (min)</label>
+                        <input type="number" id="time" min="20" step="10" placeholder="Ej: 90" class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg text-slate-200 focus:ring-2 focus:ring-violet-500 focus:border-violet-500" aria-label="Tiempo máximo en minutos">
+                    </div>
+                    
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-semibold text-slate-400 mb-2">Complejidad</label>
+                        <div id="complexity-filter" class="flex flex-wrap gap-2" role="group" aria-label="Filtro de complejidad">
+                            <button data-filter="Todos" class="filter-btn active py-2 px-4 rounded-lg" aria-pressed="true">Todos</button>
+                            <button data-filter="Ligeros" class="filter-btn text-slate-300 py-2 px-4 rounded-lg" aria-pressed="false">Ligeros</button>
+                            <button data-filter="Medios" class="filter-btn text-slate-300 py-2 px-4 rounded-lg" aria-pressed="false">Medios</button>
+                            <button data-filter="Duros" class="filter-btn text-slate-300 py-2 px-4 rounded-lg" aria-pressed="false">Duros</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="visualizations" class="mb-12" aria-labelledby="visualizations-title">
+                <h2 id="visualizations-title" class="text-2xl font-bold mb-6 text-center text-slate-200">DATOS TÁCTICOS</h2>
+                 <p class="text-slate-400 max-w-3xl mx-auto text-center mb-8">El radar de juegos se actualiza con tus filtros. Analiza el terreno de juego: ¿muchos juegos largos y complejos? ¿Quién es el gurú de los juegos ligeros? La exploración visual te dará la ventaja.</p>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-slate-800/50 border border-slate-700 p-6 rounded-xl shadow-lg">
+                        <h3 class="text-xl font-semibold mb-2 text-center text-slate-200">Mapa de Tiempo vs. Jugadores</h3>
+                        <div class="chart-container">
+                            <canvas id="playerTimeChart" role="img" aria-label="Gráfico de burbujas mostrando la relación entre tiempo de juego y número de jugadores."></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-slate-800/50 border border-slate-700 p-6 rounded-xl shadow-lg">
+                        <h3 class="text-xl font-semibold mb-2 text-center text-slate-200">Ranking de Reclutadores</h3>
+                        <div class="chart-container">
+                            <canvas id="recommenderChart" role="img" aria-label="Gráfico de barras mostrando el número de juegos recomendados por persona."></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="results" aria-live="polite">
+                <h2 class="text-2xl font-bold mb-4 text-slate-200">JUEGOS EN EL RADAR (<span id="game-count">0</span>)</h2>
+                <div id="game-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script type="module" src="index.tsx"></script>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
