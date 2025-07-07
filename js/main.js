@@ -1,8 +1,6 @@
 import { supabase } from './supabase.js';
 import { currentUser, updateAuthUI } from './auth.js';
 import { debounce } from './utils.js';
-import { switchView } from './ui.js';
-import { initCharts, updateCharts } from './charts.js';
 import { applyFilters, populateFilters, clearFiltersBtn, searchInput, playersInput, timeInput, complexityPopover, recommenderPopover } from './filters.js';
 import { renderGames, openGameDetailsModal, gameGrid, loaderContainer, noResultsMessage, errorMessage, rlsTip } from './dom.js';
 
@@ -39,7 +37,6 @@ const fetchAllGames = async () => {
     masterGameList = data;
     populateFilters(masterGameList);
     applyFilters(masterGameList, renderGames);
-    updateCharts(masterGameList);
 };
 
 const refreshModal = async (gameId) => {
@@ -93,7 +90,7 @@ gameGrid.addEventListener('click', (e) => {
 
 document.getElementById('game-details-modal').addEventListener('click', async (e) => {
     const editBtn = e.target.closest('.edit-game-btn');
-    const deleteBtn = e.target.closest('delete-game-btn');
+    const deleteBtn = e.target.closest('.delete-game-btn');
     const editCommentBtn = e.target.closest('.edit-comment-btn');
     const deleteCommentBtn = e.target.closest('.delete-comment-btn');
     const saveCommentBtn = e.target.closest('.save-comment-btn');
@@ -236,8 +233,6 @@ document.getElementById('game-details-modal').addEventListener('submit', async (
 
 // --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', async () => {
-    initCharts();
-    switchView('view-games');
     const sessionData = await supabase.auth.getSession();
     updateAuthUI(sessionData.data.session ? sessionData.data.session.user : null);
     await fetchAllGames();
