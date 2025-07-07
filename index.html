@@ -11,11 +11,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
     
-    <!-- Chosen Palette: Neon Nocturne (Slate, Violet, Cyan) -->
-    <!-- Application Structure Plan: He diseñado una SPA tipo dashboard interactivo. En lugar de una lista estática, la aplicación permite al usuario explorar activamente las recomendaciones. La estructura se centra en el usuario y su tarea (encontrar un juego), con filtros prominentes para complejidad, jugadores, tiempo y recomendador. Esta arquitectura es superior a la del informe lineal porque facilita la comparación directa y el descubrimiento basado en criterios específicos. El flujo es simple: el usuario ajusta los filtros y el contenido (gráficos y tarjetas de juegos) se actualiza al instante, proporcionando una experiencia fluida y reactiva. -->
-    <!-- Visualization & Content Choices: 1) Tarjetas de Juego Interactivas (HTML/Tailwind): Presenta toda la información de cada juego de forma organizada. Se actualizan con JS. Es la forma más clara de mostrar los detalles. 2) Filtros (HTML/JS): Permiten al usuario reducir el universo de juegos a sus necesidades específicas. Son el núcleo de la interactividad. 3) Gráfico de Burbujas (Chart.js/Canvas): Visualiza la relación entre Tiempo de Juego y Nº Máximo de Jugadores, con el color indicando la complejidad. Permite identificar rápidamente juegos en un 'espacio' determinado (ej. cortos y para muchos jugadores). 4) Gráfico de Barras (Chart.js/Canvas): Muestra cuántos juegos recomendó cada persona, dando una idea rápida de quiénes son los principales contribuidores. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-
     <style>
         body {
             font-family: 'Rajdhani', sans-serif;
@@ -38,11 +33,11 @@
                 height: 350px;
             }
         }
-        .filter-btn {
+        .btn {
             transition: all 0.2s ease-in-out;
             border: 1px solid #475569; /* slate-600 */
         }
-        .filter-btn.active {
+        .btn.active {
             background-color: #8b5cf6; /* violet-500 */
             border-color: #a78bfa; /* violet-400 */
             color: white;
@@ -87,83 +82,264 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .modal {
+            transition: opacity 0.3s ease;
+        }
+        #sidebar {
+            transition: transform 0.3s ease-in-out;
+        }
     </style>
 </head>
 <body class="bg-slate-900 text-slate-300">
 
-    <div class="container mx-auto p-4 md:p-8">
-        
-        <header class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-bold text-violet-400 mb-2">GUÍA INTERACTIVA DE JUEGOS</h1>
-            <p class="text-slate-400 max-w-3xl mx-auto">Resumen interactivo de las recomendaciones del grupo. Filtra y encuentra tu próxima obsesión.</p>
-        </header>
+    <!-- Sidebar -->
+    <div id="sidebar-overlay" class="hidden md:hidden fixed inset-0 bg-black bg-opacity-60 z-30"></div>
+    <aside id="sidebar" class="fixed top-0 left-0 w-64 h-full bg-slate-800 shadow-lg z-40 transform -translate-x-full md:translate-x-0">
+        <div class="p-5 border-b border-slate-700">
+            <h2 class="text-2xl font-bold text-violet-400">Menú</h2>
+        </div>
+        <nav class="p-2">
+            <a href="#" data-view="games" class="sidebar-link block py-2.5 px-4 rounded transition duration-200 hover:bg-slate-700 text-slate-200">Juegos</a>
+            <a href="#" data-view="dashboard" class="sidebar-link block py-2.5 px-4 rounded transition duration-200 hover:bg-slate-700 text-slate-200">Dashboard</a>
+        </nav>
+    </aside>
 
-        <main>
-            <section id="filters" class="bg-slate-800/50 border border-slate-700 p-6 rounded-xl shadow-lg mb-12 backdrop-filter backdrop-blur-sm">
-                <h2 class="text-2xl font-bold mb-6 text-center text-slate-200">ARSENAL DE FILTROS</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    
-                    <div>
-                        <label for="players" class="block text-sm font-semibold text-slate-400 mb-2">Nº de Jugadores</label>
-                        <input type="number" id="players" min="1" max="12" placeholder="Ej: 4" class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg text-slate-200 focus:ring-2 focus:ring-violet-500 focus:border-violet-500">
-                    </div>
+    <div class="md:ml-64">
+        <div class="container mx-auto p-4 md:p-8">
+            <header class="relative text-left mb-12 flex items-center">
+                <button id="menu-toggle-btn" class="p-2 rounded-md hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-violet-500 mr-4 md:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                </button>
+                <div>
+                    <h1 class="text-4xl md:text-5xl font-bold text-violet-400 mb-2">GUÍA INTERACTIVA DE JUEGOS</h1>
+                    <p class="text-slate-400 max-w-3xl">Resumen interactivo de las recomendaciones del grupo. Filtra y encuentra tu próxima obsesión.</p>
+                </div>
+                <div id="auth-container" class="absolute top-0 right-0 p-4 z-10">
+                    <!-- Auth content will be injected by JS -->
+                </div>
+            </header>
 
-                    <div>
-                        <label for="time" class="block text-sm font-semibold text-slate-400 mb-2">Tiempo Máx. (min)</label>
-                        <input type="number" id="time" min="20" step="10" placeholder="Ej: 90" class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg text-slate-200 focus:ring-2 focus:ring-violet-500 focus:border-violet-500">
-                    </div>
-                    
+            <main>
+                <!-- View: Games -->
+                <div id="view-games" class="view-container">
+                    <section id="results">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-2xl font-bold text-slate-200">JUEGOS EN EL RADAR (<span id="game-count">0</span>)</h2>
+                            <div id="dynamic-controls">
+                                <!-- "Add Game" button will be injected here by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Filter Bar -->
+                        <div id="filter-bar" class="relative bg-slate-800/50 border border-slate-700 p-4 rounded-xl shadow-lg mb-8 backdrop-filter backdrop-blur-sm flex flex-wrap items-center gap-4 z-20">
+                            <div class="flex-grow min-w-[200px] sm:min-w-[300px]">
+                                <input type="search" id="search-input" placeholder="🔍 Buscar por nombre..." class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg text-slate-200 focus:ring-2 focus:ring-violet-500 focus:border-violet-500">
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                <!-- Players Filter -->
+                                <div class="relative">
+                                    <button id="players-filter-btn" class="filter-btn btn py-2 px-4 rounded-lg">Jugadores ▾</button>
+                                    <div id="players-filter-popover" class="hidden absolute top-full right-0 mt-2 w-48 bg-slate-800 border border-slate-700 rounded-lg shadow-lg z-30 p-4">
+                                        <label for="players-input" class="block text-sm font-semibold text-slate-400 mb-2">Nº exacto</label>
+                                        <input type="number" id="players-input" min="1" max="12" class="w-full p-2 bg-slate-700 border-slate-600 rounded-lg">
+                                    </div>
+                                </div>
+                                <!-- Time Filter -->
+                                <div class="relative">
+                                    <button id="time-filter-btn" class="filter-btn btn py-2 px-4 rounded-lg">Tiempo ▾</button>
+                                    <div id="time-filter-popover" class="hidden absolute top-full right-0 mt-2 w-48 bg-slate-800 border border-slate-700 rounded-lg shadow-lg z-30 p-4">
+                                        <label for="time-input" class="block text-sm font-semibold text-slate-400 mb-2">Tiempo Máx. (min)</label>
+                                        <input type="number" id="time-input" min="10" step="10" class="w-full p-2 bg-slate-700 border-slate-600 rounded-lg">
+                                    </div>
+                                </div>
+                                <!-- Complexity Filter -->
+                                <div class="relative">
+                                    <button id="complexity-filter-btn" class="filter-btn btn py-2 px-4 rounded-lg">Complejidad ▾</button>
+                                    <div id="complexity-filter-popover" class="hidden absolute top-full right-0 mt-2 w-48 bg-slate-800 border border-slate-700 rounded-lg shadow-lg z-30 p-4 space-y-2">
+                                        <!-- Options will be injected by JS -->
+                                    </div>
+                                </div>
+                                <!-- Recommender Filter -->
+                                <div class="relative">
+                                    <button id="recommender-filter-btn" class="filter-btn btn py-2 px-4 rounded-lg">Recomendado ▾</button>
+                                    <div id="recommender-filter-popover" class="hidden absolute top-full right-0 mt-2 w-56 bg-slate-800 border border-slate-700 rounded-lg shadow-lg z-30 p-4 max-h-60 overflow-y-auto">
+                                        <!-- Options will be injected by JS -->
+                                    </div>
+                                </div>
+                            </div>
+                            <button id="clear-filters-btn" class="btn bg-red-600/80 hover:bg-red-500 border-red-500 !text-white font-bold py-2 px-4 rounded-lg">Limpiar</button>
+                        </div>
+                        <div id="game-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                            <!-- Game cards will be rendered here -->
+                        </div>
+                    </section>
+                </div>
+
+                <!-- View: Dashboard -->
+                <div id="view-dashboard" class="view-container hidden">
+                    <section id="visualizations">
+                        <h2 class="text-2xl font-bold mb-6 text-center text-slate-200">DATOS TÁCTICOS</h2>
+                        <p class="text-slate-400 max-w-3xl mx-auto text-center mb-8">Analiza el terreno de juego: ¿muchos juegos largos y complejos? ¿Quién es el gurú de los juegos fáciles? La exploración visual te dará la ventaja.</p>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div class="bg-slate-800/50 border border-slate-700 p-6 rounded-xl shadow-lg">
+                                <h3 class="text-xl font-semibold mb-2 text-center text-slate-200">Mapa de Tiempo vs. Jugadores</h3>
+                                <div class="chart-container">
+                                    <canvas id="playerTimeChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="bg-slate-800/50 border border-slate-700 p-6 rounded-xl shadow-lg">
+                                <h3 class="text-xl font-semibold mb-2 text-center text-slate-200">Ranking de Reclutadores</h3>
+                                <div class="chart-container">
+                                    <canvas id="recommenderChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Common elements for all views -->
+                <div id="loader-container" class="hidden col-span-full flex justify-center p-8">
+                    <span class="loader"></span>
+                </div>
+                <div id="no-results" class="hidden col-span-full text-center p-8 text-slate-400">
+                    <p>No se encontraron juegos que coincidan con tus filtros.</p>
+                </div>
+                <div id="error-message" class="hidden col-span-full text-center p-8 text-red-400">
+                    <p>Error al cargar los juegos desde la base de datos. Inténtalo de nuevo más tarde.</p>
+                </div>
+                <div id="rls-tip" class="hidden col-span-full text-center p-8 text-amber-400 bg-amber-900/20 rounded-lg border border-amber-600">
+                    <h3 class="font-bold text-lg mb-2">No se han cargado datos</h3>
+                    <p>Parece que no se ha podido leer ningún juego de la base de datos. La causa más común es la <strong>Seguridad a Nivel de Fila (RLS)</strong>.</p>
+                    <p class="mt-2"><strong>Solución rápida:</strong> Ve a tu panel de Supabase, entra en "Authentication" -> "Policies", selecciona tu tabla "juegos" y crea una nueva política para la acción `SELECT` que permita el acceso a todo el mundo (usando `true` en la expresión).</p>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="hidden modal fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 backdrop-filter backdrop-blur-sm">
+        <div class="bg-slate-800 p-8 rounded-lg shadow-xl w-full max-w-sm relative border border-slate-700">
+            <button id="close-login-modal-btn" class="absolute top-3 right-3 text-slate-400 hover:text-white transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+            <h2 class="text-2xl font-bold text-center text-slate-200 mb-6">INICIAR SESIÓN</h2>
+            <form id="login-form">
+                <div class="mb-4">
+                    <label for="email" class="block text-sm font-semibold text-slate-400 mb-2">Email</label>
+                    <input type="email" id="email" placeholder="tu@email.com" required class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg text-slate-200 focus:ring-2 focus:ring-violet-500 focus:border-violet-500">
+                </div>
+                <div class="mb-6">
+                    <label for="password" class="block text-sm font-semibold text-slate-400 mb-2">Contraseña</label>
+                    <input type="password" id="password" placeholder="••••••••" required class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg text-slate-200 focus:ring-2 focus:ring-violet-500 focus:border-violet-500">
+                </div>
+                <button type="submit" class="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">Entrar</button>
+                <p id="login-error" class="text-red-400 text-sm mt-4 text-center hidden"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add/Edit Game Modal -->
+    <div id="game-modal" class="hidden modal fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 backdrop-filter backdrop-blur-sm">
+        <div class="bg-slate-800 p-8 rounded-lg shadow-xl w-full max-w-2xl relative border border-slate-700 max-h-[90vh] overflow-y-auto">
+            <button id="close-game-modal-btn" class="absolute top-3 right-3 text-slate-400 hover:text-white transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+            <h2 id="game-modal-title" class="text-2xl font-bold text-center text-slate-200 mb-6">AÑADIR NUEVO JUEGO</h2>
+            <form id="game-form">
+                <input type="hidden" id="game-id">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="md:col-span-2">
-                        <label class="block text-sm font-semibold text-slate-400 mb-2">Complejidad</label>
-                        <div id="complexity-filter" class="flex flex-wrap gap-2">
-                            <button data-filter="Todos" class="filter-btn active py-2 px-4 rounded-lg">Todos</button>
-                            <button data-filter="facil" class="filter-btn text-slate-300 py-2 px-4 rounded-lg">Fácil</button>
-                            <button data-filter="medio" class="filter-btn text-slate-300 py-2 px-4 rounded-lg">Medio</button>
-                            <button data-filter="avanzado" class="filter-btn text-slate-300 py-2 px-4 rounded-lg">Avanzado</button>
-                        </div>
+                        <label for="game-name" class="block text-sm font-semibold text-slate-400 mb-1">Nombre del Juego</label>
+                        <input type="text" id="game-name" placeholder="Ej: Catan" required class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
+                    </div>
+                    <div>
+                        <label for="game-players-min" class="block text-sm font-semibold text-slate-400 mb-1">Jugadores Mín.</label>
+                        <input type="number" id="game-players-min" min="1" value="1" required class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
+                    </div>
+                    <div>
+                        <label for="game-players-max" class="block text-sm font-semibold text-slate-400 mb-1">Jugadores Máx.</label>
+                        <input type="number" id="game-players-max" min="1" value="4" required class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
+                    </div>
+                    <div>
+                        <label for="game-time-min" class="block text-sm font-semibold text-slate-400 mb-1">Tiempo Mín. (min)</label>
+                        <input type="number" id="game-time-min" min="5" step="5" value="30" required class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
+                    </div>
+                    <div>
+                        <label for="game-time-max" class="block text-sm font-semibold text-slate-400 mb-1">Tiempo Máx. (min)</label>
+                        <input type="number" id="game-time-max" min="5" step="5" value="60" required class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="game-complexity" class="block text-sm font-semibold text-slate-400 mb-1">Complejidad</label>
+                        <select id="game-complexity" required class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
+                            <option value="facil">Fácil</option>
+                            <option value="medio">Medio</option>
+                            <option value="avanzado">Avanzado</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="game-bgg" class="block text-sm font-semibold text-slate-400 mb-1">URL (BoardGameGeek)</label>
+                        <input type="url" id="game-bgg" placeholder="https://boardgamegeek.com/..." class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="game-image-url" class="block text-sm font-semibold text-slate-400 mb-1">URL de la Imagen</label>
+                        <input type="url" id="game-image-url" placeholder="https://<project-ref>.supabase.co/storage/v1/object/public/..." class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="game-recommended" class="block text-sm font-semibold text-slate-400 mb-1">Recomendado por (separado por comas)</label>
+                        <input type="text" id="game-recommended" placeholder="Ej: Diego, Ana" required class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
                     </div>
                 </div>
-            </section>
-            
-            <section id="visualizations" class="mb-12">
-                <h2 class="text-2xl font-bold mb-6 text-center text-slate-200">DATOS TÁCTICOS</h2>
-                 <p class="text-slate-400 max-w-3xl mx-auto text-center mb-8">El radar de juegos se actualiza con tus filtros. Analiza el terreno de juego: ¿muchos juegos largos y complejos? ¿Quién es el gurú de los juegos fáciles? La exploración visual te dará la ventaja.</p>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div class="bg-slate-800/50 border border-slate-700 p-6 rounded-xl shadow-lg">
-                        <h3 class="text-xl font-semibold mb-2 text-center text-slate-200">Mapa de Tiempo vs. Jugadores</h3>
-                        <div class="chart-container">
-                            <canvas id="playerTimeChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="bg-slate-800/50 border border-slate-700 p-6 rounded-xl shadow-lg">
-                        <h3 class="text-xl font-semibold mb-2 text-center text-slate-200">Ranking de Reclutadores</h3>
-                        <div class="chart-container">
-                            <canvas id="recommenderChart"></canvas>
-                        </div>
-                    </div>
+                <div class="mt-6">
+                    <button type="submit" class="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">Guardar Juego</button>
+                    <p id="game-error" class="text-red-400 text-sm mt-4 text-center hidden"></p>
                 </div>
-            </section>
+            </form>
+        </div>
+    </div>
 
-            <section id="results">
-                <h2 class="text-2xl font-bold mb-4 text-slate-200">JUEGOS EN EL RADAR (<span id="game-count">0</span>)</h2>
-                <div id="game-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                    <div id="loader-container" class="hidden col-span-full flex justify-center p-8">
-                        <span class="loader"></span>
+    <!-- Game Details Modal -->
+    <div id="game-details-modal" class="hidden modal fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 backdrop-filter backdrop-blur-sm p-4">
+        <div id="game-details-content" class="bg-slate-800 rounded-lg shadow-xl w-full max-w-4xl relative border border-slate-700 flex flex-col md:flex-row max-h-[95vh]">
+            <!-- Close Button -->
+            <button id="close-details-modal-btn" class="absolute top-3 right-3 text-slate-400 hover:text-white transition-colors z-10">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+
+            <!-- Left Side: Image -->
+            <div class="w-full md:w-1/3 flex-shrink-0 bg-slate-900 rounded-t-lg md:rounded-l-lg md:rounded-t-none">
+                <img id="modal-game-image" src="" alt="Carátula del juego" class="object-contain w-full h-48 md:h-full rounded-t-lg md:rounded-l-lg md:rounded-t-none">
+            </div>
+
+            <!-- Right Side: Details -->
+            <div class="w-full md:w-2/3 p-6 md:p-8 overflow-y-auto">
+                <h2 id="modal-game-title" class="text-3xl font-bold text-violet-400 mb-2"></h2>
+                <div class="flex items-center text-slate-400 text-sm mb-4 space-x-4 flex-wrap">
+                    <span id="modal-game-players" class="mb-2"></span>
+                    <span id="modal-game-time" class="mb-2"></span>
+                    <span id="modal-game-complexity" class="mb-2"></span>
+                </div>
+
+                <div id="modal-action-buttons" class="flex flex-wrap gap-3 mb-6">
+                    <!-- BGG Link and Edit/Delete buttons will be injected here -->
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <h4 class="text-lg font-semibold text-slate-300 mb-2 border-b border-slate-700 pb-1">Recomendado por</h4>
+                        <p id="modal-game-recommended" class="text-slate-400"></p>
                     </div>
-                    <div id="no-results" class="hidden col-span-full text-center p-8 text-slate-400">
-                        <p>No se encontraron juegos que coincidan con tus filtros.</p>
-                    </div>
-                     <div id="error-message" class="hidden col-span-full text-center p-8 text-red-400">
-                        <p>Error al cargar los juegos desde la base de datos. Inténtalo de nuevo más tarde.</p>
-                    </div>
-                    <div id="rls-tip" class="hidden col-span-full text-center p-8 text-amber-400 bg-amber-900/20 rounded-lg border border-amber-600">
-                        <h3 class="font-bold text-lg mb-2">No se han cargado datos</h3>
-                        <p>Parece que no se ha podido leer ningún juego de la base de datos. La causa más común es la <strong>Seguridad a Nivel de Fila (RLS)</strong>.</p>
-                        <p class="mt-2"><strong>Solución rápida:</strong> Ve a tu panel de Supabase, entra en "Authentication" -> "Policies", selecciona tu tabla "juegos" y crea una nueva política para la acción `SELECT` que permita el acceso a todo el mundo (usando `true` en la expresión).</p>
+                    <div>
+                        <h4 class="text-lg font-semibold text-slate-300 mb-2 border-b border-slate-700 pb-1">Comentarios</h4>
+                        <div id="modal-comments-container" class="space-y-3 text-sm">
+                            <!-- Comments will be loaded here -->
+                        </div>
+                        <div id="modal-comment-form-container" class="mt-4">
+                            <!-- Comment form will be loaded here -->
+                        </div>
                     </div>
                 </div>
-            </section>
-        </main>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -173,230 +349,593 @@
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjeW5hZm96ZWZnbm14cGJ0b2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE2MzgwNDIsImV4cCI6MjA2NzIxNDA0Mn0.rl_kSHx2WZn-e7JNnx-nHnGAaHWuYLDZlz2R143jyoY';
             const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-            const playersInput = document.getElementById('players');
-            const timeInput = document.getElementById('time');
-            const complexityFilter = document.getElementById('complexity-filter');
+            // --- GLOBAL STATE ---
+            let masterGameList = [];
+            let currentUser = null;
+
+            // --- DOM ELEMENTS ---
             const gameGrid = document.getElementById('game-grid');
             const gameCount = document.getElementById('game-count');
             const loaderContainer = document.getElementById('loader-container');
             const noResultsMessage = document.getElementById('no-results');
             const errorMessage = document.getElementById('error-message');
             const rlsTip = document.getElementById('rls-tip');
+            const dynamicControls = document.getElementById('dynamic-controls');
 
-            let playerTimeChart, recommenderChart;
+            // --- FILTER ELEMENTS ---
+            const searchInput = document.getElementById('search-input');
+            const playersInput = document.getElementById('players-input');
+            const timeInput = document.getElementById('time-input');
+            const complexityPopover = document.getElementById('complexity-filter-popover');
+            const recommenderPopover = document.getElementById('recommender-filter-popover');
+            const clearFiltersBtn = document.getElementById('clear-filters-btn');
+
+            // --- AUTH ELEMENTS ---
+            const authContainer = document.getElementById('auth-container');
+            const loginModal = document.getElementById('login-modal');
+            const loginForm = document.getElementById('login-form');
+            const closeLoginModalBtn = document.getElementById('close-login-modal-btn');
+            const loginError = document.getElementById('login-error');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+
+            // --- GAME FORM ELEMENTS ---
+            const gameModal = document.getElementById('game-modal');
+            const gameForm = document.getElementById('game-form');
+            const closeGameModalBtn = document.getElementById('close-game-modal-btn');
+            const gameError = document.getElementById('game-error');
+            const gameModalTitle = document.getElementById('game-modal-title');
+            const gameIdInput = document.getElementById('game-id');
+
+            // --- SIDEBAR & VIEW SWITCHING ---
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOverlay = document.getElementById('sidebar-overlay');
+            const menuToggleBtn = document.getElementById('menu-toggle-btn');
+            const viewContainers = document.querySelectorAll('.view-container');
+            const sidebarLinks = document.querySelectorAll('.sidebar-link');
             
-            const complexityColors = {
-                'facil': 'rgba(74, 222, 128, 0.7)',
-                'medio': 'rgba(250, 204, 21, 0.7)',
-                'avanzado': 'rgba(248, 113, 113, 0.7)'
+            let playerTimeChart, recommenderChart;
+
+            // --- UTILITY FUNCTIONS ---
+            const debounce = (func, wait) => {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
             };
+
+            // --- NAVIGATION LOGIC ---
+            const toggleSidebar = () => {
+                sidebar.classList.toggle('-translate-x-full');
+                sidebarOverlay.classList.toggle('hidden');
+            };
+
+            const switchView = (viewId) => {
+                viewContainers.forEach(container => {
+                    container.classList.toggle('hidden', container.id !== viewId);
+                });
+                sidebarLinks.forEach(link => {
+                    link.classList.toggle('bg-slate-700', link.dataset.view === viewId.replace('view-', ''));
+                });
+                if (viewId === 'view-dashboard') {
+                    if (playerTimeChart && recommenderChart) {
+                        playerTimeChart.resize();
+                        recommenderChart.resize();
+                    }
+                }
+                if (window.innerWidth < 768) { // Close sidebar on navigation on mobile
+                    toggleSidebar();
+                }
+            };
+
+            menuToggleBtn.addEventListener('click', toggleSidebar);
+            sidebarOverlay.addEventListener('click', toggleSidebar);
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    switchView(`view-${e.target.dataset.view}`);
+                });
+            });
+            
+            // --- AUTHENTICATION ---
+            const updateAuthUI = (user) => {
+                currentUser = user;
+                if (user) {
+                    authContainer.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <p class="text-sm text-slate-300 hidden sm:block">${user.email}</p>
+                            <button id="logout-btn" class="btn bg-red-600/80 hover:bg-red-500 border-red-500 !text-white font-bold py-1 px-3 rounded-lg text-sm">Salir</button>
+                        </div>
+                    `;
+                    document.getElementById('logout-btn').addEventListener('click', () => supabaseClient.auth.signOut());
+                    dynamicControls.innerHTML = `
+                        <button id="add-game-btn" class="btn bg-green-600/80 hover:bg-green-500 border-green-500 !text-white font-bold py-1 px-3 rounded-lg text-sm">Añadir Juego</button>
+                    `;
+                    document.getElementById('add-game-btn').addEventListener('click', () => {
+                        gameModalTitle.textContent = 'AÑADIR NUEVO JUEGO';
+                        gameForm.reset();
+                        gameIdInput.value = '';
+                        gameError.classList.add('hidden');
+                        gameModal.classList.remove('hidden');
+                    });
+                } else {
+                    authContainer.innerHTML = `
+                        <button id="login-btn" class="btn bg-violet-600/80 hover:bg-violet-500 border-violet-500 !text-white font-bold py-1 px-4 rounded-lg">Login</button>
+                    `;
+                    document.getElementById('login-btn').addEventListener('click', () => loginModal.classList.remove('hidden'));
+                    dynamicControls.innerHTML = '';
+                }
+                // Re-render games to show/hide edit/delete buttons in modal if it's open
+                const openModal = document.querySelector('#game-details-modal:not(.hidden)');
+                if(openModal){
+                    const gameId = document.querySelector('#modal-comment-form-container form').dataset.gameId;
+                    const game = masterGameList.find(g => g.id == gameId);
+                    if(game) openGameDetailsModal(game);
+                }
+            };
+
+            const applyFilters = () => {
+                renderGames(masterGameList);
+                updateCharts(masterGameList);
+                updateFilterButtonsState();
+            };
+
+            supabaseClient.auth.onAuthStateChange((_event, session) => {
+                updateAuthUI(session?.user);
+            });
+
+            closeLoginModalBtn.addEventListener('click', () => loginModal.classList.add('hidden'));
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                loginError.classList.add('hidden');
+                const { error } = await supabaseClient.auth.signInWithPassword({ email: emailInput.value, password: passwordInput.value });
+                if (error) {
+                    loginError.textContent = 'Email o contraseña incorrectos.';
+                    loginError.classList.remove('hidden');
+                } else {
+                    loginModal.classList.add('hidden');
+                    loginForm.reset();
+                }
+            });
+
+            // --- GAME FORM LOGIC ---
+            closeGameModalBtn.addEventListener('click', () => gameModal.classList.add('hidden'));
+            gameForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                gameError.classList.add('hidden');
+                const gameId = gameIdInput.value;
+                const recommendedBy = document.getElementById('game-recommended').value.split(',').map(s => s.trim()).filter(Boolean);
+                const gameData = {
+                    name: document.getElementById('game-name').value,
+                    players_min: parseInt(document.getElementById('game-players-min').value),
+                    players_max: parseInt(document.getElementById('game-players-max').value),
+                    time_min: parseInt(document.getElementById('game-time-min').value),
+                    time_max: parseInt(document.getElementById('game-time-max').value),
+                    complexity: document.getElementById('game-complexity').value,
+                    bgg_url: document.getElementById('game-bgg').value || null,
+                    image_url: document.getElementById('game-image-url').value || null,
+                    recommended_by: recommendedBy,
+                };
+                const result = gameId ? await supabaseClient.from('juegos').update(gameData).eq('id', gameId) : await supabaseClient.from('juegos').insert([gameData]);
+                if (result.error) {
+                    gameError.textContent = `Error: ${result.error.message}. Asegúrate de tener permisos (RLS) para esta acción.`;
+                    gameError.classList.remove('hidden');
+                } else {
+                    gameModal.classList.add('hidden');
+                    await fetchAllGames();
+                }
+            });
+
+            // --- CORE APP LOGIC ---
+            const complexityColors = { 'facil': 'rgba(74, 222, 128, 0.7)', 'medio': 'rgba(250, 204, 21, 0.7)', 'avanzado': 'rgba(248, 113, 113, 0.7)' };
             const textColor = '#cbd5e1';
             const gridColor = 'rgba(71, 85, 105, 0.5)';
 
             const renderGames = (games) => {
-                gameGrid.innerHTML = '';
-                if (games.length === 0 && loaderContainer.classList.contains('hidden')) {
+                const targetGrid = document.getElementById('game-grid');
+                targetGrid.innerHTML = '';
+                if (games.length === 0) {
                     noResultsMessage.classList.remove('hidden');
                 } else {
                     noResultsMessage.classList.add('hidden');
                 }
-
                 games.forEach(game => {
-                    let opinions = [];
-                    if (typeof game.opinions === 'string') {
-                        try { opinions = JSON.parse(game.opinions); } catch (e) { console.error('Failed to parse opinions for game:', game.name, e); }
-                    } else if (Array.isArray(game.opinions)) {
-                        opinions = game.opinions;
-                    }
-                    
-                    const opinionsHTML = opinions.map(op => `
-                        <p class="text-sm text-slate-400 italic">“${op.quote || ''}” <span class="font-semibold not-italic text-slate-300">- ${op.author || 'Anónimo'}</span></p>
-                    `).join('');
-
-                    let recommendedBy = [];
-                    if (typeof game.recommended_by === 'string') {
-                        try { recommendedBy = JSON.parse(game.recommended_by); } catch (e) { console.error('Failed to parse recommended_by for game:', game.name, e); }
-                    } else if (Array.isArray(game.recommended_by)) {
-                        recommendedBy = game.recommended_by;
-                    }
-
-                    const titleHTML = game.bgg_url
-                        ? `<a href="${game.bgg_url}" target="_blank" rel="noopener noreferrer" class="hover:underline hover:text-violet-400 transition-colors">${game.name}</a>`
-                        : game.name;
-
                     const card = document.createElement('div');
-                    card.className = 'game-card p-6 rounded-xl flex flex-col';
+                    card.className = 'game-card rounded-xl flex flex-col cursor-pointer';
+                    card.dataset.gameId = game.id;
+
+                    const placeholderColor = '#1e293b'; // slate-800
+                    const imageHTML = game.image_url
+                        ? `<div class="w-full h-40 rounded-t-xl bg-black/20 flex items-center justify-center"><img src="${game.image_url}" alt="${game.name}" class="max-w-full max-h-full object-contain"></div>`
+                        : `<div class="w-full h-40 rounded-t-xl flex items-center justify-center text-slate-500" style="background-color: ${placeholderColor};"><svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg></div>`;
+
                     card.innerHTML = `
-                        <div class="flex-grow">
-                            <div class="flex justify-between items-start mb-2">
-                                <h3 class="text-xl font-bold text-slate-100">${titleHTML}</h3>
-                                <span class="complexity-badge complexity-${game.complexity}">${game.complexity}</span>
+                        ${imageHTML}
+                        <div class="p-4 flex-grow flex flex-col">
+                            <h3 class="text-lg font-bold text-slate-100 flex-grow">${game.name}</h3>
+                            <div class="flex justify-between items-center text-slate-400 text-sm mt-2 pt-2 border-t border-slate-700">
+                                <div class="flex items-center gap-2">
+                                    <span><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" /></svg> ${game.players_min}-${game.players_max}</span>
+                                    <span><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.414-1.415L11 9.586V7z" clip-rule="evenodd" /></svg> ${game.time_max} min</span>
+                                </div>
+                                <span class="complexity-badge complexity-${game.complexity}" style="font-size: 0.7rem; padding: 0.15rem 0.5rem;">${game.complexity}</span>
                             </div>
-                            <div class="flex items-center text-slate-400 text-sm mb-4 space-x-4">
-                                <span>🎮 ${game.players_min}-${game.players_max} Jug.</span>
-                                <span>⏳ ${game.time_min === game.time_max ? game.time_max : `${game.time_min}-${game.time_max}`} min</span>
-                            </div>
-                            <div class="space-y-2 mb-4">
-                                ${opinionsHTML}
-                            </div>
-                        </div>
-                        <div class="text-xs text-slate-500 mt-4 pt-4 border-t border-slate-700">
-                            Recomendado por: <span class="font-semibold text-slate-400">${recommendedBy.join(', ')}</span>
                         </div>
                     `;
-                    gameGrid.appendChild(card);
+                    targetGrid.appendChild(card);
                 });
                 gameCount.textContent = games.length;
             };
-            
-            const setLoading = (isLoading) => {
-                if (isLoading) {
-                    gameGrid.innerHTML = '';
-                    loaderContainer.classList.remove('hidden');
-                    noResultsMessage.classList.add('hidden');
-                    errorMessage.classList.add('hidden');
-                    rlsTip.classList.add('hidden');
-                } else {
-                    loaderContainer.classList.add('hidden');
+
+            const openGameDetailsModal = (game) => {
+                document.getElementById('modal-game-image').src = game.image_url || '';
+                document.getElementById('modal-game-image').alt = `Carátula de ${game.name}`;
+                document.getElementById('modal-game-title').textContent = game.name;
+                document.getElementById('modal-game-players').innerHTML = `<span><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" /></svg> ${game.players_min}-${game.players_max} Jugadores</span>`;
+                document.getElementById('modal-game-time').innerHTML = `<span><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.414-1.415L11 9.586V7z" clip-rule="evenodd" /></svg> ${game.time_min === game.time_max ? game.time_max : `${game.time_min}-${game.time_max}`} min</span>`;
+                document.getElementById('modal-game-complexity').innerHTML = `<span class="complexity-badge complexity-${game.complexity}">${game.complexity}</span>`;
+                document.getElementById('modal-game-recommended').textContent = (Array.isArray(game.recommended_by) ? game.recommended_by : []).join(', ');
+
+                // Action Buttons
+                const actionButtonsContainer = document.getElementById('modal-action-buttons');
+                let buttonsHTML = '';
+                if (game.bgg_url) {
+                    buttonsHTML += `<a href="${game.bgg_url}" target="_blank" rel="noopener noreferrer" class="btn bg-gray-600 hover:bg-gray-500 !text-white font-bold py-2 px-4 rounded-lg inline-flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" /><path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" /></svg>Ver en BGG</a>`;
                 }
+                if (currentUser) {
+                    buttonsHTML += `<button class="edit-game-btn btn bg-cyan-600 hover:bg-cyan-500 !text-white font-bold py-2 px-4 rounded-lg" data-id="${game.id}">Editar</button>`;
+                    buttonsHTML += `<button class="delete-game-btn btn bg-red-600 hover:bg-red-500 !text-white font-bold py-2 px-4 rounded-lg" data-id="${game.id}">Eliminar</button>`;
+                }
+                actionButtonsContainer.innerHTML = buttonsHTML;
+
+                // Comments
+                const commentsContainer = document.getElementById('modal-comments-container');
+                const comments = (Array.isArray(game.comentarios) ? game.comentarios : []).sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+                commentsContainer.innerHTML = comments.length > 0
+                    ? comments.map(comment => {
+                        const isOwner = currentUser && currentUser.id === comment.user_id;
+                        const date = comment.updated_at || comment.created_at;
+                        const timestamp = new Date(date).toLocaleString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                        const editedMark = comment.updated_at ? ' (editado)' : '';
+                        
+                        const ownerActions = isOwner ? `
+                            <div class="text-xs text-slate-400 flex-shrink-0 ml-2">
+                                <button class="edit-comment-btn hover:text-cyan-400" data-comment-id="${comment.id}">Editar</button>
+                                <span class="mx-1">·</span>
+                                <button class="delete-comment-btn hover:text-red-400" data-comment-id="${comment.id}">Eliminar</button>
+                            </div>
+                        ` : '';
+
+                        return `
+                        <div class="comment-wrapper bg-slate-900/50 p-3 rounded-lg" data-comment-id="${comment.id}">
+                            <div class="flex justify-between items-start">
+                                <div class="flex-grow">
+                                    <span class="font-semibold text-slate-300">${comment.profiles?.username || 'Anónimo'}</span>
+                                    <div class="comment-content text-slate-400 italic my-1">“${comment.content}”</div>
+                                </div>
+                                ${ownerActions}
+                            </div>
+                            <div class="text-right text-xs text-slate-500 mt-1">${timestamp}${editedMark}</div>
+                        </div>
+                        `;
+                    }).join('')
+                    : '<p class="text-xs text-slate-500">No hay comentarios todavía. ¡Sé el primero!</p>';
+
+                // Comment Form
+                const commentFormContainer = document.getElementById('modal-comment-form-container');
+                commentFormContainer.innerHTML = currentUser ? `
+                <form class="add-comment-form mt-3" data-game-id="${game.id}">
+                    <textarea class="w-full p-2 bg-slate-900 border border-slate-600 rounded-lg text-sm" rows="2" placeholder="Añadir un comentario..." required></textarea>
+                    <button type="submit" class="mt-2 w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-2 px-3 rounded-lg transition-colors">Publicar Comentario</button>
+                </form>
+                ` : '<p class="text-sm text-slate-500 mt-3"><a href="#" id="login-to-comment" class="underline hover:text-violet-400">Inicia sesión</a> para dejar un comentario.</p>';
+
+                document.getElementById('game-details-modal').classList.remove('hidden');
             };
+            
+            
 
-            const applyFilters = async () => {
-                setLoading(true);
+            const fetchAllGames = async () => {
+                loaderContainer.classList.remove('hidden');
+                noResultsMessage.classList.add('hidden');
+                errorMessage.classList.add('hidden');
+                gameGrid.innerHTML = '';
 
-                const players = parseInt(playersInput.value, 10);
-                const time = parseInt(timeInput.value, 10);
-                const activeComplexity = complexityFilter.querySelector('.active').dataset.filter;
+                const { data, error } = await supabaseClient.from('juegos').select('*').order('name', { ascending: true });
 
-                let query = supabaseClient.from('juegos').select('*');
-
-                if (activeComplexity !== 'Todos') {
-                    query = query.eq('complexity', activeComplexity);
-                }
-                if (players) {
-                    query = query.lte('players_min', players).gte('players_max', players);
-                }
-                if (time) {
-                    query = query.lte('time_max', time);
-                }
-                
-                const { data: games, error } = await query;
-                
-                setLoading(false);
-
+                loaderContainer.classList.add('hidden');
                 if (error) {
-                    console.error('Error al cargar los juegos:', error);
+                    console.error('Error fetching games:', error);
                     errorMessage.classList.remove('hidden');
-                    renderGames([]); 
-                    updateCharts([]);
                     return;
                 }
                 
-                const isInitialLoad = !players && !time && activeComplexity === 'Todos';
-                if (isInitialLoad && (!games || games.length === 0)) {
-                    rlsTip.classList.remove('hidden');
-                } else {
-                    rlsTip.classList.add('hidden');
-                }
+                masterGameList = data;
+                populateFilters(masterGameList);
                 
-                errorMessage.classList.add('hidden');
-                renderGames(games || []);
-                updateCharts(games || []);
+            
+
+                applyFilters();
             };
 
             const initCharts = () => {
-                const chartOptions = {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { labels: { color: textColor } } }
-                };
-                
+                const chartOptions = { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: textColor } } } };
                 const ptCtx = document.getElementById('playerTimeChart').getContext('2d');
-                playerTimeChart = new Chart(ptCtx, {
-                    type: 'bubble',
-                    data: { datasets: [] },
-                    options: { ...chartOptions,
-                        scales: {
-                            x: { title: { display: true, text: 'Tiempo Máximo (min)', color: textColor }, ticks: { color: textColor }, grid: { color: gridColor } },
-                            y: { title: { display: true, text: 'Máximo de Jugadores', color: textColor }, ticks: { color: textColor }, grid: { color: gridColor }, beginAtZero: true }
-                        },
-                        plugins: { ...chartOptions.plugins,
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        const label = context.raw.label || '';
-                                        return `${label}: ${context.raw.x} min, ${context.raw.y} jug.`;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-
+                playerTimeChart = new Chart(ptCtx, { type: 'bubble', data: { datasets: [] }, options: { ...chartOptions, scales: { x: { title: { display: true, text: 'Tiempo Máximo (min)', color: textColor }, ticks: { color: textColor }, grid: { color: gridColor } }, y: { title: { display: true, text: 'Máximo de Jugadores', color: textColor }, ticks: { color: textColor }, grid: { color: gridColor }, beginAtZero: true } }, plugins: { ...chartOptions.plugins, tooltip: { callbacks: { label: (c) => `${c.raw.label}: ${c.raw.x} min, ${c.raw.y} jug.` } } } } });
                 const rCtx = document.getElementById('recommenderChart').getContext('2d');
-                recommenderChart = new Chart(rCtx, {
-                    type: 'bar',
-                    data: { labels: [], datasets: [] },
-                    options: { ...chartOptions,
-                        indexAxis: 'y',
-                        scales: { 
-                            x: { beginAtZero: true, ticks: { color: textColor }, grid: { color: gridColor } },
-                            y: { ticks: { color: textColor }, grid: { color: gridColor } }
-                        },
-                        plugins: { legend: { display: false } }
-                    }
-                });
+                recommenderChart = new Chart(rCtx, { type: 'bar', data: { labels: [], datasets: [] }, options: { ...chartOptions, indexAxis: 'y', scales: { x: { beginAtZero: true, ticks: { color: textColor }, grid: { color: gridColor } }, y: { ticks: { color: textColor }, grid: { color: gridColor } } }, plugins: { legend: { display: false } } } });
             };
 
             const updateCharts = (games) => {
-                const chartData = games.map(game => ({
-                    x: game.time_max,
-                    y: game.players_max,
-                    r: 8,
-                    backgroundColor: complexityColors[game.complexity],
-                    label: game.name
-                }));
-                playerTimeChart.data.datasets = [{
-                    label: 'Juegos',
-                    data: chartData
-                }];
+                if (!playerTimeChart || !recommenderChart) return;
+                playerTimeChart.data.datasets = [{ label: 'Juegos', data: games.map(g => ({ x: g.time_max, y: g.players_max, r: 8, backgroundColor: complexityColors[g.complexity], label: g.name })) }];
                 playerTimeChart.update();
-
                 const recommenderCounts = {};
-                games.forEach(game => {
-                    let recommendedBy = [];
-                    if (typeof game.recommended_by === 'string') {
-                        try { recommendedBy = JSON.parse(game.recommended_by); } catch (e) { /* ignore */ }
-                    } else if (Array.isArray(game.recommended_by)) {
-                        recommendedBy = game.recommended_by;
-                    }
-                    recommendedBy.forEach(person => {
-                        recommenderCounts[person] = (recommenderCounts[person] || 0) + 1;
-                    });
-                });
+                games.forEach(g => (Array.isArray(g.recommended_by) ? g.recommended_by : []).forEach(p => { recommenderCounts[p] = (recommenderCounts[p] || 0) + 1; }));
                 const sortedRecommenders = Object.entries(recommenderCounts).sort((a, b) => b[1] - a[1]);
                 recommenderChart.data.labels = sortedRecommenders.map(e => e[0]);
-                recommenderChart.data.datasets = [{
-                    label: 'Nº de Recomendaciones',
-                    data: sortedRecommenders.map(e => e[1]),
-                    backgroundColor: '#8b5cf6'
-                }];
+                recommenderChart.data.datasets = [{ label: 'Nº de Recomendaciones', data: sortedRecommenders.map(e => e[1]), backgroundColor: '#8b5cf6' }];
                 recommenderChart.update();
             };
 
-            playersInput.addEventListener('input', applyFilters);
-            timeInput.addEventListener('input', applyFilters);
-            
-            complexityFilter.addEventListener('click', (e) => {
-                if (e.target.tagName === 'BUTTON') {
-                    complexityFilter.querySelector('.active').classList.remove('active');
-                    e.target.classList.add('active');
-                    applyFilters();
+            const populateFilters = (games) => {
+                // Complexity
+                const complexities = ['Todos', 'facil', 'medio', 'avanzado'];
+                complexityPopover.innerHTML = complexities.map(c => `
+                    <label class="flex items-center space-x-2 hover:bg-slate-700 p-2 rounded-md cursor-pointer">
+                        <input type="radio" name="complexity" value="${c}" class="form-radio bg-slate-600 text-violet-500">
+                        <span>${c.charAt(0).toUpperCase() + c.slice(1)}</span>
+                    </label>
+                `).join('');
+                complexityPopover.querySelector('input[value="Todos"]').checked = true;
+
+                // Recommenders
+                const recommenders = [...new Set(games.flatMap(g => g.recommended_by || []))].sort();
+                recommenderPopover.innerHTML = '<label class="flex items-center space-x-2 hover:bg-slate-700 p-2 rounded-md cursor-pointer"><input type="radio" name="recommender" value="Todos" checked class="form-radio bg-slate-600 text-violet-500"><span>Todos</span></label>' + 
+                recommenders.map(r => `
+                    <label class="flex items-center space-x-2 hover:bg-slate-700 p-2 rounded-md cursor-pointer">
+                        <input type="radio" name="recommender" value="${r}" class="form-radio bg-slate-600 text-violet-500">
+                        <span>${r}</span>
+                    </label>
+                `).join('');
+            };
+
+            const updateFilterButtonsState = () => {
+                document.getElementById('players-filter-btn').classList.toggle('active', !!playersInput.value);
+                document.getElementById('time-filter-btn').classList.toggle('active', !!timeInput.value);
+                const activeComplexity = complexityPopover.querySelector('input[name="complexity"]:checked')?.value;
+                document.getElementById('complexity-filter-btn').classList.toggle('active', activeComplexity && activeComplexity !== 'Todos');
+                const activeRecommender = recommenderPopover.querySelector('input[name="recommender"]:checked')?.value;
+                document.getElementById('recommender-filter-btn').classList.toggle('active', activeRecommender && activeRecommender !== 'Todos');
+            };
+
+            const refreshModal = async (gameId) => {
+                const { data: updatedGame, error: fetchError } = await supabaseClient
+                    .from('juegos')
+                    .select('*, comentarios(*, profiles(username))')
+                    .eq('id', gameId)
+                    .single();
+                
+                if (updatedGame) {
+                    const gameIndex = masterGameList.findIndex(g => g.id == gameId);
+                    if (gameIndex > -1) {
+                        masterGameList[gameIndex] = updatedGame;
+                    }
+                    openGameDetailsModal(updatedGame);
+                    applyFilters(); // Re-filter in case a comment change affects filtering
+                } else {
+                    // If the game was deleted, just close the modal and refresh the main grid
+                    document.getElementById('game-details-modal').classList.add('hidden');
+                    await fetchAllGames();
+                }
+            };
+
+            // --- EVENT LISTENERS ---
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const popover = btn.nextElementSibling;
+                    // Close other popovers
+                    document.querySelectorAll('.relative > div').forEach(p => {
+                        if (p !== popover) p.classList.add('hidden');
+                    });
+                    popover.classList.toggle('hidden');
+                    e.stopPropagation();
+                });
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.relative')) {
+                    document.querySelectorAll('.relative > div').forEach(p => p.classList.add('hidden'));
                 }
             });
 
-            initCharts();
-            applyFilters();
+            const debouncedApplyFilters = debounce(applyFilters, 300);
+            searchInput.addEventListener('input', debouncedApplyFilters);
+            playersInput.addEventListener('input', debouncedApplyFilters);
+            timeInput.addEventListener('input', debouncedApplyFilters);
+            complexityPopover.addEventListener('change', applyFilters);
+            recommenderPopover.addEventListener('change', applyFilters);
+
+            clearFiltersBtn.addEventListener('click', () => {
+                searchInput.value = '';
+                playersInput.value = '';
+                timeInput.value = '';
+                complexityPopover.querySelector('input[value="Todos"]').checked = true;
+                recommenderPopover.querySelector('input[value="Todos"]').checked = true;
+                applyFilters();
+            });
+
+            document.getElementById('close-details-modal-btn').addEventListener('click', () => {
+                document.getElementById('game-details-modal').classList.add('hidden');
+            });
+
+            gameGrid.addEventListener('click', (e) => {
+                const card = e.target.closest('.game-card');
+                if (card) {
+                    const gameId = card.dataset.gameId;
+                    const game = masterGameList.find(g => g.id == gameId);
+                    if (game) {
+                        openGameDetailsModal(game);
+                    }
+                }
+            });
+
+            document.getElementById('game-details-modal').addEventListener('click', async (e) => {
+                const editBtn = e.target.closest('.edit-game-btn');
+                const deleteBtn = e.target.closest('.delete-game-btn');
+                const editCommentBtn = e.target.closest('.edit-comment-btn');
+                const deleteCommentBtn = e.target.closest('.delete-comment-btn');
+                const saveCommentBtn = e.target.closest('.save-comment-btn');
+                const cancelEditBtn = e.target.closest('.cancel-edit-btn');
+
+                if (e.target.id === 'login-to-comment') {
+                    e.preventDefault();
+                    document.getElementById('game-details-modal').classList.add('hidden');
+                    loginModal.classList.remove('hidden');
+                }
+
+                // --- Game Actions ---
+                if (editBtn) {
+                    const gameId = editBtn.dataset.id;
+                    const gameData = masterGameList.find(g => g.id == gameId);
+                    if (gameData) {
+                        document.getElementById('game-details-modal').classList.add('hidden');
+                        gameModalTitle.textContent = 'EDITAR JUEGO';
+                        gameIdInput.value = gameData.id;
+                        document.getElementById('game-name').value = gameData.name;
+                        document.getElementById('game-players-min').value = gameData.players_min;
+                        document.getElementById('game-players-max').value = gameData.players_max;
+                        document.getElementById('game-time-min').value = gameData.time_min;
+                        document.getElementById('game-time-max').value = gameData.time_max;
+                        document.getElementById('game-complexity').value = gameData.complexity;
+                        document.getElementById('game-bgg').value = gameData.bgg_url || '';
+                        document.getElementById('game-image-url').value = gameData.image_url || '';
+                        document.getElementById('game-recommended').value = (Array.isArray(gameData.recommended_by) ? gameData.recommended_by : []).join(', ');
+                        gameError.classList.add('hidden');
+                        gameModal.classList.remove('hidden');
+                    }
+                }
+                if (deleteBtn) {
+                    const gameId = deleteBtn.dataset.id;
+                    if (confirm('¿Estás seguro de que quieres eliminar este juego? Esta acción es irreversible.')) {
+                        const { error } = await supabaseClient.from('juegos').delete().eq('id', gameId);
+                        if (error) { 
+                            alert(`Error al eliminar: ${error.message}`); 
+                        } else { 
+                            document.getElementById('game-details-modal').classList.add('hidden');
+                            await fetchAllGames(); 
+                        }
+                    }
+                }
+
+                // --- Comment Actions ---
+                if (deleteCommentBtn) {
+                    const commentId = deleteCommentBtn.dataset.commentId;
+                    if (confirm('¿Estás seguro de que quieres eliminar este comentario?')) {
+                        const { error } = await supabaseClient.from('comentarios').delete().eq('id', commentId);
+                        if (error) {
+                            alert(`Error al eliminar el comentario: ${error.message}`);
+                        } else {
+                            const gameId = document.querySelector('#modal-comment-form-container form').dataset.gameId;
+                            await refreshModal(gameId);
+                        }
+                    }
+                }
+
+                if (editCommentBtn) {
+                    const commentId = editCommentBtn.dataset.commentId;
+                    const wrapper = document.querySelector(`.comment-wrapper[data-comment-id='${commentId}']`);
+                    const contentDiv = wrapper.querySelector('.comment-content');
+                    const originalContent = contentDiv.textContent.trim().slice(1, -1); // Remove quotes
+                    
+                    wrapper.dataset.originalContent = originalContent;
+
+                    contentDiv.innerHTML = `
+                        <textarea class="w-full p-2 bg-slate-800 border border-slate-600 rounded-lg text-sm" rows="3">${originalContent}</textarea>
+                        <div class="text-right mt-1">
+                            <button class="save-comment-btn text-xs bg-violet-600 hover:bg-violet-700 text-white font-bold py-1 px-2 rounded-lg" data-comment-id="${commentId}">Guardar</button>
+                            <button class="cancel-edit-btn text-xs bg-gray-500 hover:bg-gray-400 text-white font-bold py-1 px-2 rounded-lg ml-1">Cancelar</button>
+                        </div>
+                    `;
+                    editCommentBtn.parentElement.style.display = 'none';
+                }
+
+                if (cancelEditBtn) {
+                    const commentId = e.target.closest('.comment-wrapper').dataset.commentId;
+                    const wrapper = document.querySelector(`.comment-wrapper[data-comment-id='${commentId}']`);
+                    const contentDiv = wrapper.querySelector('.comment-content');
+                    contentDiv.innerHTML = `“${wrapper.dataset.originalContent}”`;
+                    wrapper.querySelector('.edit-comment-btn').parentElement.style.display = 'flex';
+                }
+
+                if (saveCommentBtn) {
+                    const commentId = saveCommentBtn.dataset.commentId;
+                    const wrapper = document.querySelector(`.comment-wrapper[data-comment-id='${commentId}']`);
+                    const textarea = wrapper.querySelector('textarea');
+                    const newContent = textarea.value.trim();
+
+                    if (newContent) {
+                        const { error } = await supabaseClient
+                            .from('comentarios')
+                            .update({ content: newContent, updated_at: new Date().toISOString() })
+                            .eq('id', commentId);
+
+                        if (error) {
+                            alert(`Error al guardar el comentario: ${error.message}`);
+                        } else {
+                            const gameId = document.querySelector('#modal-comment-form-container form').dataset.gameId;
+                            await refreshModal(gameId);
+                        }
+                    }
+                }
+            });
+
+            document.getElementById('game-details-modal').addEventListener('submit', async (e) => {
+                if (e.target.classList.contains('add-comment-form')) {
+                    e.preventDefault();
+                    if (!currentUser) {
+                        alert('Debes iniciar sesión para comentar.');
+                        return;
+                    }
+                    const form = e.target;
+                    const gameId = form.dataset.gameId;
+                    const textarea = form.querySelector('textarea');
+                    const content = textarea.value.trim();
+
+                    if (content) {
+                        form.querySelector('button').disabled = true;
+                        form.querySelector('textarea').disabled = true;
+
+                        const { error } = await supabaseClient.from('comentarios').insert({
+                            content: content,
+                            game_id: gameId,
+                            user_id: currentUser.id
+                        });
+
+                        if (error) {
+                            alert(`Error al publicar el comentario: ${error.message}`);
+                            form.querySelector('button').disabled = false;
+                            form.querySelector('textarea').disabled = false;
+                        } else {
+                            await refreshModal(gameId);
+                        }
+                    }
+                }
+            });
+
+            // --- INITIALIZATION ---
+            (async () => {
+                initCharts();
+                await fetchAllGames();
+                switchView('view-games');
+                const sessionData = await supabaseClient.auth.getSession();
+                updateAuthUI(sessionData.data.session ? sessionData.data.session.user : null);
+            })();
         });
     </script>
 </body>
