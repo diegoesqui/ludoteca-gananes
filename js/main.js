@@ -13,6 +13,7 @@ const gameForm = document.getElementById('game-form');
 const gameError = document.getElementById('game-error');
 const gameModalTitle = document.getElementById('game-modal-title');
 const gameIdInput = document.getElementById('game-id');
+const closeGameModalBtn = document.getElementById('close-game-modal-btn');
 
 // --- CORE APP LOGIC ---
 const fetchAllGames = async () => {
@@ -88,7 +89,16 @@ gameGrid.addEventListener('click', (e) => {
     }
 });
 
+closeGameModalBtn.addEventListener('click', () => {
+    gameModal.classList.add('hidden');
+});
+
 document.getElementById('game-details-modal').addEventListener('click', async (e) => {
+    if (e.target.closest('#close-details-modal-btn')) {
+        document.getElementById('game-details-modal').classList.add('hidden');
+        return;
+    }
+
     const editBtn = e.target.closest('.edit-game-btn');
     const deleteBtn = e.target.closest('.delete-game-btn');
     const editCommentBtn = e.target.closest('.edit-comment-btn');

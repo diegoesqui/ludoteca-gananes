@@ -9,6 +9,7 @@ const loginError = document.getElementById('login-error');
 const emailInput = document.getElementById('email');
 const passwordInput = document.getElementById('password');
 const authContainer = document.getElementById('auth-container');
+const dynamicControls = document.getElementById('dynamic-controls');
 
 const updateAuthUI = (user) => {
     currentUser = user;
@@ -22,11 +23,20 @@ const updateAuthUI = (user) => {
         document.getElementById('logout-btn').addEventListener('click', async () => {
             await supabase.auth.signOut();
         });
+        dynamicControls.innerHTML = '<button id="add-game-btn" class="btn bg-green-600 hover:bg-green-500 !text-white font-bold py-2 px-4 rounded-lg">Añadir Juego</button>';
+        document.getElementById('add-game-btn').addEventListener('click', () => {
+            document.getElementById('game-modal-title').textContent = 'AÑADIR NUEVO JUEGO';
+            document.getElementById('game-form').reset();
+            document.getElementById('game-id').value = '';
+            document.getElementById('game-error').classList.add('hidden');
+            document.getElementById('game-modal').classList.remove('hidden');
+        });
     } else {
         authContainer.innerHTML = '<button id="login-btn" class="btn bg-violet-600 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded-lg">Entrar</button>';
         document.getElementById('login-btn').addEventListener('click', () => {
             loginModal.classList.remove('hidden');
         });
+        dynamicControls.innerHTML = '';
     }
 };
 
