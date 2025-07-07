@@ -40,7 +40,8 @@ loginForm.addEventListener('submit', async (e) => {
     loginError.classList.add('hidden');
     const { error } = await supabase.auth.signInWithPassword({ email: emailInput.value, password: passwordInput.value });
     if (error) {
-        loginError.textContent = 'Email o contraseña incorrectos.';
+        console.error('Login failed:', error);
+        loginError.textContent = error.message;
         loginError.classList.remove('hidden');
     } else {
         loginModal.classList.add('hidden');

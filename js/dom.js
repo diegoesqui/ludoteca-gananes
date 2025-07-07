@@ -14,13 +14,20 @@ const renderGames = (games) => {
     }
     games.forEach(game => {
         const gameCard = document.createElement('div');
-        gameCard.className = 'game-card p-4 rounded-lg shadow-lg';
+        gameCard.className = 'game-card rounded-lg shadow-lg overflow-hidden';
         gameCard.dataset.gameId = game.id;
+        const imageUrl = game.image_url || 'https://placehold.co/400x300/0f172a/a78bfa?text=' + encodeURIComponent(game.name);
+
         gameCard.innerHTML = `
-            <h3 class="text-xl font-bold">${game.name}</h3>
-            <p class="text-slate-400">${game.players_min}-${game.players_max} jugadores</p>
-            <p class="text-slate-400">${game.time_min}-${game.time_max} min</p>
-            <span class="complexity-badge complexity-${game.complexity}">${game.complexity}</span>
+            <img src="${imageUrl}" alt="Imagen de ${game.name}" class="w-full h-40 object-cover">
+            <div class="p-4">
+                <h3 class="text-xl font-bold">${game.name}</h3>
+                <div class="flex justify-between items-center mt-2 text-slate-400">
+                    <span>${game.players_min}-${game.players_max} jug.</span>
+                    <span>${game.time_min}-${game.time_max} min</span>
+                    <span class="complexity-badge complexity-${game.complexity}">${game.complexity}</span>
+                </div>
+            </div>
         `;
         gameGrid.appendChild(gameCard);
     });
