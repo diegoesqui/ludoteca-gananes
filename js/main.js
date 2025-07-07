@@ -93,6 +93,43 @@ closeGameModalBtn.addEventListener('click', () => {
     gameModal.classList.add('hidden');
 });
 
+gameForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    gameError.classList.add('hidden');
+
+    const isEditing = !!gameIdInput.value;
+    const gameId = gameIdInput.value;
+
+    const gameData = {
+        name: document.getElementById('game-name').value,
+        players_min: parseInt(document.getElementById('game-players-min').value),
+        players_max: parseInt(document.getElementById('game-players-max').value),
+        time_min: parseInt(document.getElementById('game-time-min').value),
+        time_max: parseInt(document.getElementById('game-time-max').value),
+        complexity: document.getElementById('game-complexity').value,
+        bgg_url: document.getElementById('game-bgg').value || null,
+        image_url: document.getElementById('game-image-url').value || null,
+        recommended_by: document.getElementById('game-recommended').value.split(',').map(s => s.trim()).filter(s => s !== ''),
+    };
+
+    let error;
+    if (isEditing) {
+        ({ error } = await supabase.from('juegos').update(gameData).eq('id', gameId));
+    } else {
+        ({ error } = await supabase.from('juegos').insert([gameData]));
+    }
+
+    if (error) {
+        console.error('Error saving game:', error);
+        gameError.textContent = `Error al guardar el juego: ${error.message}`;
+        gameError.classList.remove('hidden');
+    } else {
+        gameModal.classList.add('hidden');
+        await fetchAllGames();
+    }
+});
+
 document.getElementById('game-details-modal').addEventListener('click', async (e) => {
     if (e.target.closest('#close-details-modal-btn')) {
         document.getElementById('game-details-modal').classList.add('hidden');
