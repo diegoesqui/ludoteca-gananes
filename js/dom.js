@@ -19,7 +19,7 @@ const renderGames = (games) => {
         const imageUrl = game.image_url || 'https://placehold.co/400x300/0f172a/a78bfa?text=' + encodeURIComponent(game.name);
 
         gameCard.innerHTML = `
-            <img src="${imageUrl}" alt="Imagen de ${game.name}" class="w-full h-40 object-contain">
+            <img src="${imageUrl}" alt="Imagen de ${game.name}" class="w-full h-64 object-contain">
             <div class="p-4">
                 <h3 class="text-xl font-bold">${game.name}</h3>
                 <div class="flex justify-between items-center mt-2 text-slate-400">
