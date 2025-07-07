@@ -1,0 +1,96 @@
+const gameGrid = document.getElementById('game-grid');
+const gameCount = document.getElementById('game-count');
+const noResultsMessage = document.getElementById('no-results');
+const loaderContainer = document.getElementById('loader-container');
+const errorMessage = document.getElementById('error-message');
+const rlsTip = document.getElementById('rls-tip');
+
+const renderGames = (games) => {
+    gameGrid.innerHTML = '';
+    if (games.length === 0) {
+        noResultsMessage.classList.remove('hidden');
+    } else {
+        noResultsMessage.classList.add('hidden');
+    }
+    games.forEach(game => {
+        const gameCard = document.createElement('div');
+        gameCard.className = 'game-card p-4 rounded-lg shadow-lg';
+        gameCard.dataset.gameId = game.id;
+        gameCard.innerHTML = `
+            <h3 class="text-xl font-bold">${game.name}</h3>
+            <p class="text-slate-400">${game.players_min}-${game.players_max} jugadores</p>
+            <p class="text-slate-400">${game.time_min}-${game.time_max} min</p>
+            <span class="complexity-badge complexity-${game.complexity}">${game.complexity}</span>
+        `;
+        gameGrid.appendChild(gameCard);
+    });
+    gameCount.textContent = games.length;
+};
+
+const openGameDetailsModal = (game, currentUser) => {
+    document.getElementById('modal-game-image').src = game.image_url || '';
+    document.getElementById('modal-game-image').alt = `Carátula de ${game.name}`;
+    document.getElementById('modal-game-title').textContent = game.name;
+    document.getElementById('modal-game-players').innerHTML = `<span><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" /></svg> ${game.players_min}-${game.players_max} Jugadores</span>`;
+    document.getElementById('modal-game-time').innerHTML = `<span><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.414-1.415L11 9.586V7z" clip-rule="evenodd" /></svg> ${game.time_min === game.time_max ? game.time_max : `${game.time_min}-${game.time_max}`} min</span>`;
+    document.getElementById('modal-game-complexity').innerHTML = `<span class="complexity-badge complexity-${game.complexity}">${game.complexity}</span>`;
+    document.getElementById('modal-game-recommended').textContent = (Array.isArray(game.recommended_by) ? game.recommended_by : []).join(', ');
+
+    // Action Buttons
+    const actionButtonsContainer = document.getElementById('modal-action-buttons');
+    let buttonsHTML = '';
+    if (game.bgg_url) {
+        buttonsHTML += `<a href="${game.bgg_url}" target="_blank" rel="noopener noreferrer" class="btn bg-gray-600 hover:bg-gray-500 !text-white font-bold py-2 px-4 rounded-lg inline-flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" /><path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" /></svg>Ver en BGG</a>`;
+    }
+    if (currentUser) {
+        buttonsHTML += `<button class="edit-game-btn btn bg-cyan-600 hover:bg-cyan-500 !text-white font-bold py-2 px-4 rounded-lg" data-id="${game.id}">Editar</button>`;
+        buttonsHTML += `<button class="delete-game-btn btn bg-red-600 hover:bg-red-500 !text-white font-bold py-2 px-4 rounded-lg" data-id="${game.id}">Eliminar</button>`;
+    }
+    actionButtonsContainer.innerHTML = buttonsHTML;
+
+    // Comments
+    const commentsContainer = document.getElementById('modal-comments-container');
+    const comments = (Array.isArray(game.comentarios) ? game.comentarios : []).sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+    commentsContainer.innerHTML = comments.length > 0
+        ? comments.map(comment => {
+            const isOwner = currentUser && currentUser.id === comment.user_id;
+            const date = comment.updated_at || comment.created_at;
+            const timestamp = new Date(date).toLocaleString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+            const editedMark = comment.updated_at ? ' (editado)' : '';
+            
+            const ownerActions = isOwner ? `
+                <div class="text-xs text-slate-400 flex-shrink-0 ml-2">
+                    <button class="edit-comment-btn hover:text-cyan-400" data-comment-id="${comment.id}">Editar</button>
+                    <span class="mx-1">·</span>
+                    <button class="delete-comment-btn hover:text-red-400" data-comment-id="${comment.id}">Eliminar</button>
+                </div>
+            ` : '';
+
+            return `
+            <div class="comment-wrapper bg-slate-900/50 p-3 rounded-lg" data-comment-id="${comment.id}">
+                <div class="flex justify-between items-start">
+                    <div class="flex-grow">
+                        <span class="font-semibold text-slate-300">${comment.profiles?.username || 'Anónimo'}</span>
+                        <div class="comment-content text-slate-400 italic my-1">“${comment.content}”</div>
+                    </div>
+                    ${ownerActions}
+                </div>
+                <div class="text-right text-xs text-slate-500 mt-1">${timestamp}${editedMark}</div>
+            </div>
+            `;
+        }).join('')
+        : '<p class="text-xs text-slate-500">No hay comentarios todavía. ¡Sé el primero!</p>';
+
+    // Comment Form
+    const commentFormContainer = document.getElementById('modal-comment-form-container');
+    commentFormContainer.innerHTML = currentUser ? `
+    <form class="add-comment-form mt-3" data-game-id="${game.id}">
+        <textarea class="w-full p-2 bg-slate-900 border border-slate-600 rounded-lg text-sm" rows="2" placeholder="Añadir un comentario..." required></textarea>
+        <button type="submit" class="mt-2 w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-2 px-3 rounded-lg transition-colors">Publicar Comentario</button>
+    </form>
+    ` : '<p class="text-sm text-slate-500 mt-3"><a href="#" id="login-to-comment" class="underline hover:text-violet-400">Inicia sesión</a> para dejar un comentario.</p>';
+
+    document.getElementById('game-details-modal').classList.remove('hidden');
+};
+
+export { renderGames, openGameDetailsModal, gameGrid, loaderContainer, noResultsMessage, errorMessage, rlsTip };
