@@ -72,12 +72,25 @@
                                     </div>
                                 </div>
                                 <!-- Recommender Filter -->
-                                <div class="relative">
-                                    <button id="recommender-filter-btn" class="filter-btn btn py-2 px-4 rounded-lg">Recomendado ▾</button>
-                                    <div id="recommender-filter-popover" class="hidden absolute top-full right-0 mt-2 w-56 bg-slate-800 border border-slate-700 rounded-lg shadow-lg z-30 p-4 max-h-60 overflow-y-auto">
-                                        <!-- Options will be injected by JS -->
-                                    </div>
-                                </div>
+                                 <div class="relative">
+                                     <button id="recommender-filter-btn" class="filter-btn btn py-2 px-4 rounded-lg">Recomendado ▾</button>
+                                     <div id="recommender-filter-popover" class="hidden absolute top-full right-0 mt-2 w-56 bg-slate-800 border border-slate-700 rounded-lg shadow-lg z-30 p-4 max-h-60 overflow-y-auto">
+                                         <!-- Options will be injected by JS -->
+                                     </div>
+                                 </div>
+                                 <!-- Sort By -->
+                                 <div class="relative">
+                                     <select id="sort-by" class="filter-btn btn py-2 px-4 rounded-lg bg-slate-800 text-slate-300 border border-slate-700">
+                                         <option value="name-asc">Nombre (A-Z)</option>
+                                         <option value="name-desc">Nombre (Z-A)</option>
+                                         <option value="players-min-asc">Jugadores (Min. Asc)</option>
+                                         <option value="players-min-desc">Jugadores (Min. Desc)</option>
+                                         <option value="time-min-asc">Tiempo (Min. Asc)</option>
+                                         <option value="time-min-desc">Tiempo (Min. Desc)</option>
+                                         <option value="complexity-asc">Complejidad (Asc)</option>
+                                         <option value="complexity-desc">Complejidad (Desc)</option>
+                                     </select>
+                                 </div>
                             </div>
                             <button id="clear-filters-btn" class="btn bg-red-600/80 hover:bg-red-500 border-red-500 !text-white font-bold py-2 px-4 rounded-lg">Limpiar</button>
                         </div>

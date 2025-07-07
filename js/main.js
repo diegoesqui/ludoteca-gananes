@@ -6,6 +6,7 @@ import { renderGames, openGameDetailsModal, gameGrid, loaderContainer, noResults
 
 // --- GLOBAL STATE ---
 let masterGameList = [];
+let currentSort = 'name-asc'; // Default sort
 
 // --- GAME FORM ELEMENTS ---
 const gameModal = document.getElementById('game-modal');
@@ -14,6 +15,7 @@ const gameError = document.getElementById('game-error');
 const gameModalTitle = document.getElementById('game-modal-title');
 const gameIdInput = document.getElementById('game-id');
 const closeGameModalBtn = document.getElementById('close-game-modal-btn');
+const sortBySelect = document.getElementById('sort-by');
 
 // --- CORE APP LOGIC ---
 const fetchAllGames = async () => {
@@ -37,7 +39,7 @@ const fetchAllGames = async () => {
 
     masterGameList = data;
     populateFilters(masterGameList);
-    applyFilters(masterGameList, renderGames);
+    applyFilters(masterGameList, renderGames, currentSort);
 };
 
 const refreshModal = async (gameId) => {
@@ -67,7 +69,12 @@ searchInput.addEventListener('input', debouncedApplyFilters);
 playersInput.addEventListener('input', debouncedApplyFilters);
 timeInput.addEventListener('input', debouncedApplyFilters);
 complexityPopover.addEventListener('change', () => applyFilters(masterGameList, renderGames));
-recommenderPopover.addEventListener('change', () => applyFilters(masterGameList, renderGames));
+recommenderPopover.addEventListener('change', () => applyFilters(masterGameList, renderGames, currentSort));
+
+sortBySelect.addEventListener('change', (e) => {
+    currentSort = e.target.value;
+    applyFilters(masterGameList, renderGames, currentSort);
+});
 
 clearFiltersBtn.addEventListener('click', () => {
     searchInput.value = '';
