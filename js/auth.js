@@ -23,7 +23,7 @@ const updateAuthUI = (user) => {
         document.getElementById('logout-btn').addEventListener('click', async () => {
             await supabase.auth.signOut();
         });
-        dynamicControls.innerHTML = '<button id="add-game-btn" class="btn bg-green-600 hover:bg-green-500 !text-white font-bold py-2 px-4 rounded-lg">Añadir Juego</button>';
+        dynamicControls.innerHTML = '<button id="add-game-btn" class="btn bg-violet-600 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded-lg">Añadir Juego</button>';
         document.getElementById('add-game-btn').addEventListener('click', () => {
             document.getElementById('game-modal-title').textContent = 'AÑADIR NUEVO JUEGO';
             document.getElementById('game-form').reset();
@@ -34,7 +34,7 @@ const updateAuthUI = (user) => {
     } else {
         authContainer.innerHTML = '<button id="login-btn" class="btn bg-transparent border-slate-600 hover:bg-slate-800 hover:border-violet-400 text-slate-300 py-1 px-3 rounded-lg text-sm">Login</button>';
         document.getElementById('login-btn').addEventListener('click', () => {
-            loginModal.classList.remove('hidden');
+            showModal('login-modal');
         });
         dynamicControls.innerHTML = '';
     }

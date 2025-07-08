@@ -97,7 +97,7 @@ const openGameDetailsModal = (game, currentUser) => {
     </form>
     ` : '<p class="text-sm text-slate-500 mt-3"><a href="#" id="login-to-comment" class="underline hover:text-violet-400">Inicia sesión</a> para dejar un comentario.</p>';
 
-    document.getElementById('game-details-modal').classList.remove('hidden');
+        document.getElementById('game-details-modal').classList.remove('hidden');
 };
 
 export { renderGames, openGameDetailsModal, gameGrid, loaderContainer, noResultsMessage, errorMessage, rlsTip };

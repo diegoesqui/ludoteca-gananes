@@ -3,6 +3,7 @@ import { currentUser, updateAuthUI } from './auth.js';
 import { debounce } from './utils.js';
 import { applyFilters, populateFilters, clearFiltersBtn, searchInput, playersInput, timeInput, complexityPopover, recommenderPopover } from './filters.js';
 import { renderGames, openGameDetailsModal, gameGrid, loaderContainer, noResultsMessage, errorMessage, rlsTip } from './dom.js';
+import { showModal } from './ui.js';
 
 // --- GLOBAL STATE ---
 let masterGameList = [];
@@ -94,6 +95,7 @@ gameGrid.addEventListener('click', (e) => {
         const game = masterGameList.find(g => g.id == gameId);
         if (game) {
             openGameDetailsModal(game, currentUser);
+            showModal('game-details-modal');
         }
     }
 });
@@ -134,8 +136,8 @@ gameForm.addEventListener('submit', async (e) => {
         gameError.textContent = `Error al guardar el juego: ${error.message}`;
         gameError.classList.remove('hidden');
     } else {
-        gameModal.classList.add('hidden');
-        await fetchAllGames();
+        showModal('game-details-modal'); // Mostrar el modal de detalles actualizado
+        await refreshModal(gameId);
     }
 });
 
@@ -154,8 +156,7 @@ document.getElementById('game-details-modal').addEventListener('click', async (e
 
     if (e.target.id === 'login-to-comment') {
         e.preventDefault();
-        document.getElementById('game-details-modal').classList.add('hidden');
-        loginModal.classList.remove('hidden');
+        showModal('login-modal');
     }
 
     // --- Game Actions ---
@@ -163,7 +164,7 @@ document.getElementById('game-details-modal').addEventListener('click', async (e
         const gameId = editBtn.dataset.id;
         const gameData = masterGameList.find(g => g.id == gameId);
         if (gameData) {
-            document.getElementById('game-details-modal').classList.add('hidden');
+            showModal('game-modal'); // Mostrar el modal de edición
             gameModalTitle.textContent = 'EDITAR JUEGO';
             gameIdInput.value = gameData.id;
             document.getElementById('game-name').value = gameData.name;
