@@ -1,6 +1,6 @@
 const searchInput = document.getElementById('search-input');
 const playersInput = document.getElementById('players-input'); // Keep for custom input if needed
-const timeInput = document.getElementById('time-input');
+
 const complexityPopover = document.getElementById('complexity-filter-popover');
 
 const clearFiltersBtn = document.getElementById('clear-filters-btn');
@@ -60,7 +60,22 @@ const applyFilters = (masterGameList, renderGames, sortOrder) => {
         players = parseInt(selectedPlayers);
     }
 
-    const time = parseInt(timeInput.value);
+    let selectedTime = null;
+    const timeRadios = timePopover.querySelectorAll('input[name="time"]');
+    timeRadios.forEach(radio => {
+        if (radio.checked) {
+            selectedTime = radio.value;
+        }
+    });
+
+    let time = null;
+    if (selectedTime === 'Todos') {
+        time = null; // No filter applied
+    } else if (selectedTime === '121') {
+        time = 9999; // Effectively no upper limit for 120+ min
+    } else if (selectedTime) {
+        time = parseInt(selectedTime);
+    }
     
     // Complexity Filter Logic (Multi-select)
     const selectedComplexities = Array.from(complexityPopover.querySelectorAll('input[name="complexity"]:checked')).map(cb => cb.value);
@@ -71,7 +86,7 @@ const applyFilters = (masterGameList, renderGames, sortOrder) => {
         const nameMatch = game.name.toLowerCase().includes(searchTerm);
         
         const playersMatch = !players || (game.players_min <= players && game.players_max >= players) || (selectedPlayers === '5+' && game.players_max >= 5);
-        const timeMatch = !time || (game.time_max <= time);
+        const timeMatch = !time || (game.time_max <= time) || (selectedTime === '121' && game.time_max >= 120);
         
         const complexityMatch = selectedComplexities.includes('Todos') || selectedComplexities.length === 0 || selectedComplexities.includes(game.complexity);
         
@@ -134,4 +149,4 @@ const populateFilters = (games) => {
     });
 };
 
-export { applyFilters, populateFilters, clearFiltersBtn, searchInput, playersInput, timeInput, complexityPopover, playersPopover, timePopover };
+export { applyFilters, populateFilters, clearFiltersBtn, searchInput, playersInput, complexityPopover, playersPopover, timePopover };
