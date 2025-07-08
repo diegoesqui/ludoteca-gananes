@@ -15,9 +15,9 @@ const updateAuthUI = (user) => {
     currentUser = user;
     if (user) {
         authContainer.innerHTML = `
-            <div class="flex items-center">
-                <span class="text-sm mr-4">Hola, ${user.email}</span>
-                <button id="logout-btn" class="btn bg-red-600 hover:bg-red-500 !text-white font-bold py-2 px-4 rounded-lg">Salir</button>
+            <div class="flex items-center gap-4">
+                <span class="text-sm text-slate-400">${user.email}</span>
+                <button id="logout-btn" class="btn bg-transparent border-slate-600 hover:bg-slate-800 hover:border-violet-400 text-slate-300 py-1 px-3 rounded-lg text-sm">Logout</button>
             </div>
         `;
         document.getElementById('logout-btn').addEventListener('click', async () => {
@@ -32,7 +32,7 @@ const updateAuthUI = (user) => {
             document.getElementById('game-modal').classList.remove('hidden');
         });
     } else {
-        authContainer.innerHTML = '<button id="login-btn" class="btn bg-violet-600 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded-lg">Entrar</button>';
+        authContainer.innerHTML = '<button id="login-btn" class="btn bg-transparent border-slate-600 hover:bg-slate-800 hover:border-violet-400 text-slate-300 py-1 px-3 rounded-lg text-sm">Login</button>';
         document.getElementById('login-btn').addEventListener('click', () => {
             loginModal.classList.remove('hidden');
         });
