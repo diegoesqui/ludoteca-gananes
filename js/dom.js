@@ -23,8 +23,8 @@ const renderGames = (games) => {
             <div class="p-4">
                 <h3 class="text-xl font-bold">${game.name}</h3>
                 <div class="flex justify-between items-center mt-2 text-slate-400">
-                    <span><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" /></svg>${game.players_min}-${game.players_max} jug.</span>
-                    <span><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.414-1.415L11 9.586V7z" clip-rule="evenodd" /></svg>${game.time_min}-${game.time_max} min</span>
+                    <span><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" /></svg>${game.players_min === game.players_max ? game.players_min : `${game.players_min}-${game.players_max}`} jug.</span>
+                    <span><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.414-1.415L11 9.586V7z" clip-rule="evenodd" /></svg>${game.time_min === game.time_max ? game.time_max : `${game.time_min}-${game.time_max}`} min</span>
                     <span class="complexity-badge complexity-${game.complexity}">${game.complexity}</span>
                 </div>
             </div>
@@ -38,7 +38,7 @@ const openGameDetailsModal = (game, currentUser) => {
     document.getElementById('modal-game-image').src = game.image_url || '';
     document.getElementById('modal-game-image').alt = `Carátula de ${game.name}`;
     document.getElementById('modal-game-title').textContent = game.name;
-    document.getElementById('modal-game-players').innerHTML = `<span><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" /></svg> ${game.players_min}-${game.players_max} Jugadores</span>`;
+    document.getElementById('modal-game-players').innerHTML = `<span><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" /></svg> ${game.players_min === game.players_max ? game.players_min : `${game.players_min}-${game.players_max}`} Jugadores</span>`;
     document.getElementById('modal-game-time').innerHTML = `<span><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.414-1.415L11 9.586V7z" clip-rule="evenodd" /></svg> ${game.time_min === game.time_max ? game.time_max : `${game.time_min}-${game.time_max}`} min</span>`;
     document.getElementById('modal-game-complexity').innerHTML = `<span class="complexity-badge complexity-${game.complexity}">${game.complexity}</span>`;
     document.getElementById('modal-game-recommended').textContent = (Array.isArray(game.recommended_by) ? game.recommended_by : []).join(', ');
