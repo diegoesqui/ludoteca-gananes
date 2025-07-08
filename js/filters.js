@@ -116,11 +116,9 @@ const applyFilters = (masterGameList, renderGames, sortOrder) => {
 const populateFilters = (games) => {
     // Complexity Filter (Checkboxes)
     const complexities = [...new Set(games.map(g => g.complexity))];
+    const orderedComplexities = ['facil', 'medio', 'avanzado'].filter(c => complexities.includes(c));
     complexityPopover.innerHTML = `
-        <label class="flex items-center text-slate-400 hover:text-violet-400 cursor-pointer">
-            <input type="checkbox" name="complexity" value="Todos" class="mr-2 form-checkbox text-violet-600 rounded focus:ring-violet-500"> Todos
-        </label>
-        ${complexities.map(c => `
+        ${orderedComplexities.map(c => `
             <label class="flex items-center text-slate-400 hover:text-violet-400 cursor-pointer">
                 <input type="checkbox" name="complexity" value="${c}" class="mr-2 form-checkbox text-violet-600 rounded focus:ring-violet-500"> ${c}
             </label>

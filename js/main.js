@@ -81,7 +81,7 @@ clearFiltersBtn.addEventListener('click', () => {
     searchInput.value = '';
     playersPopover.querySelector('input[name="players"][value="Todos"]').checked = true;
     timeInput.value = '';
-    complexityPopover.querySelector('input[value="Todos"]').checked = true;
+    complexityPopover.querySelectorAll('input[name="complexity"]').forEach(cb => cb.checked = false);
     recommenderPopover.querySelector('input[value="Todos"]').checked = true;
     sortBySelect.value = 'name-asc'; // Reset sort dropdown
     currentSort = 'name-asc'; // Reset sort state variable
