@@ -47,11 +47,11 @@ const openGameDetailsModal = (game, currentUser) => {
     const actionButtonsContainer = document.getElementById('modal-action-buttons');
     let buttonsHTML = '';
     if (game.bgg_url) {
-        buttonsHTML += `<a href="${game.bgg_url}" target="_blank" rel="noopener noreferrer" class="btn bg-gray-600 hover:bg-gray-500 !text-white font-bold py-2 px-4 rounded-lg inline-flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" /><path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" /></svg>Ver en BGG</a>`;
+        buttonsHTML += `<a href="${game.bgg_url}" target="_blank" rel="noopener noreferrer" class="btn bg-transparent border-slate-600 hover:bg-slate-800 hover:border-violet-400 text-slate-300 py-2 px-4 rounded-lg inline-flex items-center text-sm"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" /><path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" /></svg>Ver en BGG</a>`;
     }
     if (currentUser) {
-        buttonsHTML += `<button class="edit-game-btn btn bg-cyan-600 hover:bg-cyan-500 !text-white font-bold py-2 px-4 rounded-lg" data-id="${game.id}">Editar</button>`;
-        buttonsHTML += `<button class="delete-game-btn btn bg-red-600 hover:bg-red-500 !text-white font-bold py-2 px-4 rounded-lg" data-id="${game.id}">Eliminar</button>`;
+        buttonsHTML += `<button class="edit-game-btn btn bg-violet-600 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded-lg text-sm" data-id="${game.id}">Editar</button>`;
+        buttonsHTML += `<button class="delete-game-btn btn bg-transparent border-slate-600 hover:border-red-500 hover:text-red-400 text-slate-300 py-2 px-4 rounded-lg text-sm" data-id="${game.id}">Eliminar</button>`;
     }
     actionButtonsContainer.innerHTML = buttonsHTML;
 
