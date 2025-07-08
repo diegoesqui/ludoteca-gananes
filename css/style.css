@@ -75,3 +75,11 @@
         #sidebar {
             transition: transform 0.3s ease-in-out;
         }
+
+        #filter-bar {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        #filter-bar.hidden-bar {
+            transform: translateY(-120%);
+        }
