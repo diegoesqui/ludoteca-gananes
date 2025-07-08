@@ -68,14 +68,7 @@ const applyFilters = (masterGameList, renderGames, sortOrder) => {
         }
     });
 
-    let time = null;
-    if (selectedTime === 'Todos') {
-        time = null; // No filter applied
-    } else if (selectedTime === '121') {
-        time = 9999; // Effectively no upper limit for 120+ min
-    } else if (selectedTime) {
-        time = parseInt(selectedTime);
-    }
+    
     
     // Complexity Filter Logic (Multi-select)
     const selectedComplexities = Array.from(complexityPopover.querySelectorAll('input[name="complexity"]:checked')).map(cb => cb.value);
@@ -86,7 +79,11 @@ const applyFilters = (masterGameList, renderGames, sortOrder) => {
         const nameMatch = game.name.toLowerCase().includes(searchTerm);
         
         const playersMatch = !players || (game.players_min <= players && game.players_max >= players) || (selectedPlayers === '5+' && game.players_max >= 5);
-        const timeMatch = !time || (game.time_max <= time) || (selectedTime === '121' && game.time_max >= 120);
+        const timeMatch = selectedTime === 'Todos' ||
+                          (selectedTime === '<30' && game.time_max <= 30) ||
+                          (selectedTime === '30-60' && game.time_max > 30 && game.time_max <= 60) ||
+                          (selectedTime === '60-90' && game.time_max > 60 && game.time_max <= 90) ||
+                          (selectedTime === '>90' && game.time_max > 90);
         
         const complexityMatch = selectedComplexities.includes('Todos') || selectedComplexities.length === 0 || selectedComplexities.includes(game.complexity);
         
@@ -137,16 +134,7 @@ const populateFilters = (games) => {
 
     
 
-    // Event listener for players radio buttons to show/hide custom input
-    playersPopover.addEventListener('change', (event) => {
-        const customPlayersInput = document.getElementById('players-custom-input');
-        if (event.target.value === '5+') {
-            customPlayersInput.classList.remove('hidden');
-        } else {
-            customPlayersInput.classList.add('hidden');
-            customPlayersInput.value = ''; // Clear custom input when not in use
-        }
-    });
+    
 };
 
 export { applyFilters, populateFilters, clearFiltersBtn, searchInput, playersInput, complexityPopover, playersPopover, timePopover };

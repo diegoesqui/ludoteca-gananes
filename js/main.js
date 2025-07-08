@@ -68,6 +68,7 @@ const refreshModal = async (gameId) => {
 const debouncedApplyFilters = debounce(() => applyFilters(masterGameList, renderGames), 300);
 searchInput.addEventListener('input', debouncedApplyFilters);
 playersPopover.addEventListener('change', debouncedApplyFilters); // New event listener for players filter
+timePopover.addEventListener('change', debouncedApplyFilters);
 
 complexityPopover.addEventListener('change', () => applyFilters(masterGameList, renderGames));
 
