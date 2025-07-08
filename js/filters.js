@@ -2,11 +2,11 @@ const searchInput = document.getElementById('search-input');
 const playersInput = document.getElementById('players-input'); // Keep for custom input if needed
 const timeInput = document.getElementById('time-input');
 const complexityPopover = document.getElementById('complexity-filter-popover');
-const recommenderPopover = document.getElementById('recommender-filter-popover');
+
 const clearFiltersBtn = document.getElementById('clear-filters-btn');
 
 const complexityFilterBtn = document.getElementById('complexity-filter-btn');
-const recommenderFilterBtn = document.getElementById('recommender-filter-btn');
+
 const playersFilterBtn = document.getElementById('players-filter-btn');
 const timeFilterBtn = document.getElementById('time-filter-btn');
 
@@ -17,9 +17,7 @@ const timePopover = document.getElementById('time-filter-popover');
 complexityFilterBtn.addEventListener('click', () => {
     complexityPopover.classList.toggle('hidden');
 });
-recommenderFilterBtn.addEventListener('click', () => {
-    recommenderPopover.classList.toggle('hidden');
-});
+
 playersFilterBtn.addEventListener('click', () => {
     playersPopover.classList.toggle('hidden');
 });
@@ -32,9 +30,7 @@ document.addEventListener('click', (event) => {
     if (!complexityFilterBtn.contains(event.target) && !complexityPopover.contains(event.target)) {
         complexityPopover.classList.add('hidden');
     }
-    if (!recommenderFilterBtn.contains(event.target) && !recommenderPopover.contains(event.target)) {
-        recommenderPopover.classList.add('hidden');
-    }
+    
     if (!playersFilterBtn.contains(event.target) && !playersPopover.contains(event.target)) {
         playersPopover.classList.add('hidden');
     }
@@ -69,8 +65,7 @@ const applyFilters = (masterGameList, renderGames, sortOrder) => {
     // Complexity Filter Logic (Multi-select)
     const selectedComplexities = Array.from(complexityPopover.querySelectorAll('input[name="complexity"]:checked')).map(cb => cb.value);
     
-    // Recommender Filter Logic (Multi-select)
-    const selectedRecommenders = Array.from(recommenderPopover.querySelectorAll('input[name="recommender"]:checked')).map(cb => cb.value);
+    
 
     let filteredGames = masterGameList.filter(game => {
         const nameMatch = game.name.toLowerCase().includes(searchTerm);
@@ -79,9 +74,9 @@ const applyFilters = (masterGameList, renderGames, sortOrder) => {
         const timeMatch = !time || (game.time_max <= time);
         
         const complexityMatch = selectedComplexities.includes('Todos') || selectedComplexities.length === 0 || selectedComplexities.includes(game.complexity);
-        const recommenderMatch = selectedRecommenders.includes('Todos') || selectedRecommenders.length === 0 || (Array.isArray(game.recommended_by) && game.recommended_by.some(r => selectedRecommenders.includes(r)));
         
-        return nameMatch && playersMatch && timeMatch && complexityMatch && recommenderMatch;
+        
+        return nameMatch && playersMatch && timeMatch && complexityMatch;
     });
 
     // Sorting logic
@@ -125,18 +120,7 @@ const populateFilters = (games) => {
         `).join('')}
     `;
 
-    // Recommender Filter (Checkboxes)
-    const recommenders = [...new Set(games.flatMap(g => g.recommended_by))];
-    recommenderPopover.innerHTML = `
-        <label class="flex items-center text-slate-400 hover:text-violet-400 cursor-pointer">
-            <input type="checkbox" name="recommender" value="Todos" class="mr-2 form-checkbox text-violet-600 rounded focus:ring-violet-500"> Todos
-        </label>
-        ${recommenders.map(r => `
-            <label class="flex items-center text-slate-400 hover:text-violet-400 cursor-pointer">
-                <input type="checkbox" name="recommender" value="${r}" class="mr-2 form-checkbox text-violet-600 rounded focus:ring-violet-500"> ${r}
-            </label>
-        `).join('')}
-    `;
+    
 
     // Event listener for players radio buttons to show/hide custom input
     playersPopover.addEventListener('change', (event) => {
@@ -150,4 +134,4 @@ const populateFilters = (games) => {
     });
 };
 
-export { applyFilters, populateFilters, clearFiltersBtn, searchInput, playersInput, timeInput, complexityPopover, recommenderPopover, playersPopover, timePopover };
+export { applyFilters, populateFilters, clearFiltersBtn, searchInput, playersInput, timeInput, complexityPopover, playersPopover, timePopover };

@@ -1,7 +1,7 @@
 import { supabase } from './supabase.js';
 import { currentUser, updateAuthUI } from './auth.js';
 import { debounce } from './utils.js';
-import { applyFilters, populateFilters, clearFiltersBtn, searchInput, playersInput, timeInput, complexityPopover, recommenderPopover, playersPopover, timePopover } from './filters.js';
+import { applyFilters, populateFilters, clearFiltersBtn, searchInput, playersInput, timeInput, complexityPopover, playersPopover, timePopover } from './filters.js';
 import { renderGames, openGameDetailsModal, gameGrid, loaderContainer, noResultsMessage, errorMessage, rlsTip } from './dom.js';
 import { showModal } from './ui.js';
 
@@ -70,7 +70,7 @@ searchInput.addEventListener('input', debouncedApplyFilters);
 playersPopover.addEventListener('change', debouncedApplyFilters); // New event listener for players filter
 timeInput.addEventListener('change', debouncedApplyFilters);
 complexityPopover.addEventListener('change', () => applyFilters(masterGameList, renderGames));
-recommenderPopover.addEventListener('change', () => applyFilters(masterGameList, renderGames, currentSort));
+
 
 sortBySelect.addEventListener('change', (e) => {
     currentSort = e.target.value;
@@ -82,7 +82,7 @@ clearFiltersBtn.addEventListener('click', () => {
     playersPopover.querySelector('input[name="players"][value="Todos"]').checked = true;
     timeInput.value = '';
     complexityPopover.querySelectorAll('input[name="complexity"]').forEach(cb => cb.checked = false);
-    recommenderPopover.querySelector('input[value="Todos"]').checked = true;
+    
     sortBySelect.value = 'name-asc'; // Reset sort dropdown
     currentSort = 'name-asc'; // Reset sort state variable
     applyFilters(masterGameList, renderGames, currentSort);
