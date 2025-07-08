@@ -1,7 +1,7 @@
 import { supabase } from './supabase.js';
 import { currentUser, updateAuthUI } from './auth.js';
 import { debounce } from './utils.js';
-import { applyFilters, populateFilters, clearFiltersBtn, searchInput, playersInput, timeInput, complexityPopover, recommenderPopover } from './filters.js';
+import { applyFilters, populateFilters, clearFiltersBtn, searchInput, playersInput, timeInput, complexityPopover, recommenderPopover, playersPopover, timePopover } from './filters.js';
 import { renderGames, openGameDetailsModal, gameGrid, loaderContainer, noResultsMessage, errorMessage, rlsTip } from './dom.js';
 import { showModal } from './ui.js';
 
@@ -67,8 +67,8 @@ const refreshModal = async (gameId) => {
 // --- EVENT LISTENERS ---
 const debouncedApplyFilters = debounce(() => applyFilters(masterGameList, renderGames), 300);
 searchInput.addEventListener('input', debouncedApplyFilters);
-playersInput.addEventListener('input', debouncedApplyFilters);
-timeInput.addEventListener('input', debouncedApplyFilters);
+playersPopover.addEventListener('change', debouncedApplyFilters); // New event listener for players filter
+timeInput.addEventListener('change', debouncedApplyFilters);
 complexityPopover.addEventListener('change', () => applyFilters(masterGameList, renderGames));
 recommenderPopover.addEventListener('change', () => applyFilters(masterGameList, renderGames, currentSort));
 
@@ -79,7 +79,7 @@ sortBySelect.addEventListener('change', (e) => {
 
 clearFiltersBtn.addEventListener('click', () => {
     searchInput.value = '';
-    playersInput.value = '';
+    playersPopover.querySelector('input[name="players"][value="Todos"]').checked = true;
     timeInput.value = '';
     complexityPopover.querySelector('input[value="Todos"]').checked = true;
     recommenderPopover.querySelector('input[value="Todos"]').checked = true;
