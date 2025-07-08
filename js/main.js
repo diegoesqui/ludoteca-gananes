@@ -82,7 +82,9 @@ clearFiltersBtn.addEventListener('click', () => {
     timeInput.value = '';
     complexityPopover.querySelector('input[value="Todos"]').checked = true;
     recommenderPopover.querySelector('input[value="Todos"]').checked = true;
-    applyFilters(masterGameList, renderGames);
+    sortBySelect.value = 'name-asc'; // Reset sort dropdown
+    currentSort = 'name-asc'; // Reset sort state variable
+    applyFilters(masterGameList, renderGames, currentSort);
 });
 
 gameGrid.addEventListener('click', (e) => {
