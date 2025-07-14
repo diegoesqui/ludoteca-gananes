@@ -10,10 +10,13 @@ const emailInput = document.getElementById('email');
 const passwordInput = document.getElementById('password');
 const authContainer = document.getElementById('auth-container');
 const dynamicControls = document.getElementById('dynamic-controls');
+const userEmailDisplay = document.getElementById('user-email-display');
+const editProfileBtn = document.getElementById('edit-profile-btn');
+const logoutBtn = document.getElementById('logout-btn');
+const loginBtn = document.getElementById('login-btn');
+const addGameBtn = document.getElementById('add-game-btn');
 
 const updateAuthUI = async (user) => {
-    const editProfileBtn = document.getElementById('edit-profile-btn'); // Get reference before clearing authContainer
-
     if (user) {
         // Fetch user profile data
         const { data: profile, error } = await supabase
@@ -29,46 +32,26 @@ const updateAuthUI = async (user) => {
             currentUser = { ...user, ...profile }; // Merge user and profile data
         }
 
-        // Clear authContainer first to avoid duplicate buttons
-        authContainer.innerHTML = '';
+        // Update content and visibility for logged-in state
+        userEmailDisplay.textContent = currentUser.email;
+        userEmailDisplay.classList.remove('hidden');
 
-        const userDisplay = document.createElement('span');
-        userDisplay.className = 'text-sm text-slate-400';
-        userDisplay.textContent = currentUser.email;
+        editProfileBtn.classList.remove('hidden');
+        logoutBtn.classList.remove('hidden');
+        loginBtn.classList.add('hidden'); // Hide login button
 
-        const logoutBtn = document.createElement('button');
-        logoutBtn.id = 'logout-btn';
-        logoutBtn.className = 'btn bg-transparent border-slate-600 hover:bg-slate-800 hover:border-violet-400 text-slate-300 py-1 px-3 rounded-lg text-sm';
-        logoutBtn.textContent = 'Logout';
-        logoutBtn.addEventListener('click', async () => {
-            await supabase.auth.signOut();
-        });
-
-        editProfileBtn.classList.remove('hidden'); // Show edit profile button
-
-        const loggedInContainer = document.createElement('div');
-        loggedInContainer.className = 'flex items-center gap-2';
-        loggedInContainer.appendChild(userDisplay);
-        loggedInContainer.appendChild(editProfileBtn); // Append the existing button
-        loggedInContainer.appendChild(logoutBtn);
-        authContainer.appendChild(loggedInContainer);
+        addGameBtn.classList.remove('hidden'); // Show add game button
 
     } else {
         currentUser = null;
-        authContainer.innerHTML = ''; // Clear authContainer
 
-        const loginBtn = document.createElement('button');
-        loginBtn.id = 'login-btn';
-        loginBtn.className = 'btn bg-transparent border-slate-600 hover:bg-slate-800 hover:border-violet-400 text-slate-300 py-1 px-3 rounded-lg text-sm';
-        loginBtn.textContent = 'Login';
-        loginBtn.addEventListener('click', () => {
-            showModal('login-modal');
-        });
-        authContainer.appendChild(loginBtn);
+        // Update visibility for logged-out state
+        userEmailDisplay.classList.add('hidden');
+        editProfileBtn.classList.add('hidden');
+        logoutBtn.classList.add('hidden');
+        loginBtn.classList.remove('hidden'); // Show login button
 
-        dynamicControls.innerHTML = '';
-        document.getElementById('add-game-btn').classList.add('hidden'); // Hide add game button
-        editProfileBtn.classList.add('hidden'); // Hide edit profile button
+        addGameBtn.classList.add('hidden'); // Hide add game button
     }
 };
 
@@ -89,6 +72,14 @@ loginForm.addEventListener('submit', async (e) => {
         loginModal.classList.add('hidden');
         loginForm.reset();
     }
+});
+
+logoutBtn.addEventListener('click', async () => {
+    await supabase.auth.signOut();
+});
+
+loginBtn.addEventListener('click', () => {
+    showModal('login-modal');
 });
 
 export { currentUser, updateAuthUI };
