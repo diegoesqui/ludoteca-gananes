@@ -93,8 +93,10 @@ const openGameDetailsModal = (game, currentUser) => {
     const commentFormContainer = document.getElementById('modal-comment-form-container');
     commentFormContainer.innerHTML = currentUser ? `
     <form class="add-comment-form mt-3" data-game-id="${game.id}">
-        <textarea class="w-full p-2 bg-slate-900 border border-slate-600 rounded-lg text-sm" rows="2" placeholder="Añadir un comentario..." required></textarea>
-        <button type="submit" class="mt-2 w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-2 px-3 rounded-lg transition-colors">Publicar Comentario</button>
+        <div class="flex items-center gap-2">
+            <textarea class="flex-grow p-2 bg-slate-900 border border-slate-600 rounded-lg text-sm" rows="1" placeholder="Añadir un comentario..." required></textarea>
+            <button type="submit" class="bg-violet-600 hover:bg-violet-700 text-white font-bold py-2 px-3 rounded-lg transition-colors flex-shrink-0">Publicar</button>
+        </div>
     </form>
     ` : '<p class="text-sm text-slate-500 mt-3"><a href="#" id="login-to-comment" class="underline hover:text-violet-400">Inicia sesión</a> para dejar un comentario.</p>';
 
