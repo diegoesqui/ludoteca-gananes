@@ -18,6 +18,7 @@ const gameIdInput = document.getElementById('game-id');
 const closeGameModalBtn = document.getElementById('close-game-modal-btn');
 const sortBySelect = document.getElementById('sort-by');
 const addGameBtn = document.getElementById('add-game-btn');
+const loginBtn = document.getElementById('login-btn');
 
 // --- PROFILE ELEMENTS ---
 const editProfileBtn = document.getElementById('edit-profile-btn');
@@ -368,5 +369,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('game-id').value = '';
         document.getElementById('game-error').classList.add('hidden');
         showModal('game-modal');
+    });
+
+    // Event listener for Login button
+    loginBtn.addEventListener('click', () => {
+        showModal('login-modal');
     });
 });

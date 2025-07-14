@@ -78,8 +78,4 @@ logoutBtn.addEventListener('click', async () => {
     await supabase.auth.signOut();
 });
 
-loginBtn.addEventListener('click', () => {
-    showModal('login-modal');
-});
-
 export { currentUser, updateAuthUI };
