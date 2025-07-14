@@ -41,6 +41,7 @@ const openGameDetailsModal = (game, currentUser) => {
     document.getElementById('modal-game-players').innerHTML = `<span><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" /></svg> ${game.players_min === game.players_max ? game.players_min : `${game.players_min}-${game.players_max}`} Jugadores</span>`;
     document.getElementById('modal-game-time').innerHTML = `<span><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.414-1.415L11 9.586V7z" clip-rule="evenodd" /></svg> ${game.time_min === game.time_max ? game.time_max : `${game.time_min}-${game.time_max}`} min</span>`;
     document.getElementById('modal-game-complexity').innerHTML = `<span class="complexity-badge complexity-${game.complexity}">${game.complexity}</span>`;
+    document.getElementById('modal-game-description').textContent = game.description || 'No hay descripción disponible.';
     document.getElementById('modal-game-recommended').textContent = (Array.isArray(game.recommended_by) ? game.recommended_by : []).join(', ');
 
     // Action Buttons
@@ -92,8 +93,10 @@ const openGameDetailsModal = (game, currentUser) => {
     const commentFormContainer = document.getElementById('modal-comment-form-container');
     commentFormContainer.innerHTML = currentUser ? `
     <form class="add-comment-form mt-3" data-game-id="${game.id}">
-        <textarea class="w-full p-2 bg-slate-900 border border-slate-600 rounded-lg text-sm" rows="2" placeholder="Añadir un comentario..." required></textarea>
-        <button type="submit" class="mt-2 w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-2 px-3 rounded-lg transition-colors">Publicar Comentario</button>
+        <div class="flex items-center gap-2">
+            <textarea class="flex-grow p-2 bg-slate-900 border border-slate-600 rounded-lg text-sm" rows="1" placeholder="Añadir un comentario..." required></textarea>
+            <button type="submit" class="bg-violet-600 hover:bg-violet-700 text-white font-bold py-2 px-3 rounded-lg transition-colors flex-shrink-0">Publicar</button>
+        </div>
     </form>
     ` : '<p class="text-sm text-slate-500 mt-3"><a href="#" id="login-to-comment" class="underline hover:text-violet-400">Inicia sesión</a> para dejar un comentario.</p>';
 

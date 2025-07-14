@@ -115,6 +115,7 @@ gameForm.addEventListener('submit', async (e) => {
 
     const gameData = {
         name: document.getElementById('game-name').value,
+        description: document.getElementById('game-description').value,
         players_min: parseInt(document.getElementById('game-players-min').value),
         players_max: parseInt(document.getElementById('game-players-max').value),
         time_min: parseInt(document.getElementById('game-time-min').value),
@@ -169,6 +170,7 @@ document.getElementById('game-details-modal').addEventListener('click', async (e
             gameModalTitle.textContent = 'EDITAR JUEGO';
             gameIdInput.value = gameData.id;
             document.getElementById('game-name').value = gameData.name;
+            document.getElementById('game-description').value = gameData.description || '';
             document.getElementById('game-players-min').value = gameData.players_min;
             document.getElementById('game-players-max').value = gameData.players_max;
             document.getElementById('game-time-min').value = gameData.time_min;
