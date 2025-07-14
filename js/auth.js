@@ -11,32 +11,64 @@ const passwordInput = document.getElementById('password');
 const authContainer = document.getElementById('auth-container');
 const dynamicControls = document.getElementById('dynamic-controls');
 
-const updateAuthUI = (user) => {
-    currentUser = user;
+const updateAuthUI = async (user) => {
+    const editProfileBtn = document.getElementById('edit-profile-btn'); // Get reference before clearing authContainer
+
     if (user) {
-        authContainer.innerHTML = `
-            <div class="flex items-center gap-4">
-                <span class="text-sm text-slate-400">${user.email}</span>
-                <button id="logout-btn" class="btn bg-transparent border-slate-600 hover:bg-slate-800 hover:border-violet-400 text-slate-300 py-1 px-3 rounded-lg text-sm">Logout</button>
-            </div>
-        `;
-        document.getElementById('logout-btn').addEventListener('click', async () => {
+        // Fetch user profile data
+        const { data: profile, error } = await supabase
+            .from('profiles')
+            .select('username')
+            .eq('id', user.id)
+            .single();
+
+        if (error) {
+            console.error('Error fetching profile:', error);
+            currentUser = user; // Still set user even if profile fetch fails
+        } else {
+            currentUser = { ...user, ...profile }; // Merge user and profile data
+        }
+
+        // Clear authContainer first to avoid duplicate buttons
+        authContainer.innerHTML = '';
+
+        const userDisplay = document.createElement('span');
+        userDisplay.className = 'text-sm text-slate-400';
+        userDisplay.textContent = currentUser.email;
+
+        const logoutBtn = document.createElement('button');
+        logoutBtn.id = 'logout-btn';
+        logoutBtn.className = 'btn bg-transparent border-slate-600 hover:bg-slate-800 hover:border-violet-400 text-slate-300 py-1 px-3 rounded-lg text-sm';
+        logoutBtn.textContent = 'Logout';
+        logoutBtn.addEventListener('click', async () => {
             await supabase.auth.signOut();
         });
-        dynamicControls.innerHTML = '<button id="add-game-btn" class="btn bg-violet-600 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded-lg">Añadir Juego</button>';
-        document.getElementById('add-game-btn').addEventListener('click', () => {
-            document.getElementById('game-modal-title').textContent = 'AÑADIR NUEVO JUEGO';
-            document.getElementById('game-form').reset();
-            document.getElementById('game-id').value = '';
-            document.getElementById('game-error').classList.add('hidden');
-            document.getElementById('game-modal').classList.remove('hidden');
-        });
+
+        editProfileBtn.classList.remove('hidden'); // Show edit profile button
+
+        const loggedInContainer = document.createElement('div');
+        loggedInContainer.className = 'flex items-center gap-2';
+        loggedInContainer.appendChild(userDisplay);
+        loggedInContainer.appendChild(editProfileBtn); // Append the existing button
+        loggedInContainer.appendChild(logoutBtn);
+        authContainer.appendChild(loggedInContainer);
+
     } else {
-        authContainer.innerHTML = '<button id="login-btn" class="btn bg-transparent border-slate-600 hover:bg-slate-800 hover:border-violet-400 text-slate-300 py-1 px-3 rounded-lg text-sm">Login</button>';
-        document.getElementById('login-btn').addEventListener('click', () => {
+        currentUser = null;
+        authContainer.innerHTML = ''; // Clear authContainer
+
+        const loginBtn = document.createElement('button');
+        loginBtn.id = 'login-btn';
+        loginBtn.className = 'btn bg-transparent border-slate-600 hover:bg-slate-800 hover:border-violet-400 text-slate-300 py-1 px-3 rounded-lg text-sm';
+        loginBtn.textContent = 'Login';
+        loginBtn.addEventListener('click', () => {
             showModal('login-modal');
         });
+        authContainer.appendChild(loginBtn);
+
         dynamicControls.innerHTML = '';
+        document.getElementById('add-game-btn').classList.add('hidden'); // Hide add game button
+        editProfileBtn.classList.add('hidden'); // Hide edit profile button
     }
 };
 

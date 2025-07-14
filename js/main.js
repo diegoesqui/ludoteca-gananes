@@ -17,6 +17,13 @@ const gameModalTitle = document.getElementById('game-modal-title');
 const gameIdInput = document.getElementById('game-id');
 const closeGameModalBtn = document.getElementById('close-game-modal-btn');
 const sortBySelect = document.getElementById('sort-by');
+const addGameBtn = document.getElementById('add-game-btn');
+
+// --- PROFILE ELEMENTS ---
+const editProfileBtn = document.getElementById('edit-profile-btn');
+const editProfileForm = document.getElementById('edit-profile-form');
+const profileUsernameInput = document.getElementById('profile-username');
+const profileError = document.getElementById('profile-error');
 
 // --- CORE APP LOGIC ---
 const fetchAllGames = async () => {
@@ -25,7 +32,7 @@ const fetchAllGames = async () => {
     errorMessage.classList.add('hidden');
     gameGrid.innerHTML = '';
 
-    const { data, error } = await supabase.from('juegos').select('*, comentarios(*, profiles(username))').order('name', { ascending: true });
+    const { data, error } = await supabase.from('juegos').select('*, comentarios(*, profiles(username)), profiles!juegos_created_by_fkey(username)').order('name', { ascending: true });
 
     loaderContainer.classList.add('hidden');
     if (error) {
@@ -115,6 +122,7 @@ gameForm.addEventListener('submit', async (e) => {
 
     const gameData = {
         name: document.getElementById('game-name').value,
+        description: document.getElementById('game-description').value,
         players_min: parseInt(document.getElementById('game-players-min').value),
         players_max: parseInt(document.getElementById('game-players-max').value),
         time_min: parseInt(document.getElementById('game-time-min').value),
@@ -122,13 +130,13 @@ gameForm.addEventListener('submit', async (e) => {
         complexity: document.getElementById('game-complexity').value,
         bgg_url: document.getElementById('game-bgg').value || null,
         image_url: document.getElementById('game-image-url').value || null,
-        recommended_by: document.getElementById('game-recommended').value.split(',').map(s => s.trim()).filter(s => s !== ''),
     };
 
     let error;
     if (isEditing) {
         ({ error } = await supabase.from('juegos').update(gameData).eq('id', gameId));
     } else {
+        gameData.created_by = currentUser.id;
         ({ error } = await supabase.from('juegos').insert([gameData]));
     }
 
@@ -176,7 +184,6 @@ document.getElementById('game-details-modal').addEventListener('click', async (e
             document.getElementById('game-complexity').value = gameData.complexity;
             document.getElementById('game-bgg').value = gameData.bgg_url || '';
             document.getElementById('game-image-url').value = gameData.image_url || '';
-            document.getElementById('game-recommended').value = (Array.isArray(gameData.recommended_by) ? gameData.recommended_by : []).join(', ');
             gameError.classList.add('hidden');
             gameModal.classList.remove('hidden');
         }
@@ -289,9 +296,76 @@ document.getElementById('game-details-modal').addEventListener('submit', async (
     }
 });
 
+// --- PROFILE EDITING LOGIC ---
+editProfileBtn.addEventListener('click', () => {
+    if (currentUser && currentUser.username) {
+        profileUsernameInput.value = currentUser.username;
+    } else {
+        profileUsernameInput.value = '';
+    }
+    profileError.classList.add('hidden');
+    showModal('edit-profile-modal');
+});
+
+editProfileForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    profileError.classList.add('hidden');
+
+    if (!currentUser) {
+        profileError.textContent = 'Debes iniciar sesión para editar tu perfil.';
+        profileError.classList.remove('hidden');
+        return;
+    }
+
+    const newUsername = profileUsernameInput.value.trim();
+
+    if (!newUsername) {
+        profileError.textContent = 'El nombre de usuario no puede estar vacío.';
+        profileError.classList.remove('hidden');
+        return;
+    }
+
+    // Update the profiles table
+    const { data, error } = await supabase
+        .from('profiles')
+        .update({ username: newUsername, updated_at: new Date().toISOString() })
+        .eq('id', currentUser.id);
+
+    if (error) {
+        console.error('Error updating profile:', error);
+        profileError.textContent = `Error al actualizar el perfil: ${error.message}`;
+        profileError.classList.remove('hidden');
+    } else {
+        // Update the currentUser object in auth.js
+        // This will trigger updateAuthUI and refresh the display
+        const { data: updatedUser, error: userError } = await supabase.auth.updateUser({
+            data: { username: newUsername }
+        });
+
+        if (userError) {
+            console.error('Error updating user metadata:', userError);
+            profileError.textContent = `Error al actualizar metadatos de usuario: ${userError.message}`;
+            profileError.classList.remove('hidden');
+        } else {
+            showModal(null); // Close modal
+            // Re-fetch all games to update the creator name if it was changed
+            await fetchAllGames();
+        }
+    }
+});
+
 // --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', async () => {
     const sessionData = await supabase.auth.getSession();
     updateAuthUI(sessionData.data.session ? sessionData.data.session.user : null);
     await fetchAllGames();
+
+    // Event listener for Add Game button
+    addGameBtn.addEventListener('click', () => {
+        document.getElementById('game-modal-title').textContent = 'AÑADIR NUEVO JUEGO';
+        document.getElementById('game-form').reset();
+        document.getElementById('game-id').value = '';
+        document.getElementById('game-error').classList.add('hidden');
+        showModal('game-modal');
+    });
 });

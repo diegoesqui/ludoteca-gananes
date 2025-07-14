@@ -28,6 +28,7 @@
                 </div>
                 <div id="auth-container" class="absolute top-0 right-0 p-4 z-10">
                     <!-- Auth content will be injected by JS -->
+                    <button id="edit-profile-btn" class="hidden btn bg-transparent border-slate-600 hover:bg-slate-800 hover:border-violet-400 text-slate-300 py-1 px-3 rounded-lg text-sm">Editar Perfil</button>
                 </div>
             </header>
 
@@ -38,7 +39,7 @@
                         <div class="flex justify-between items-center mb-4">
                             <h2 class="text-2xl font-bold text-slate-200">JUEGOS EN EL RADAR (<span id="game-count">0</span>)</h2>
                             <div id="dynamic-controls">
-                                <!-- "Add Game" button will be injected here by JS -->
+                                <button id="add-game-btn" class="hidden btn bg-violet-600 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded-lg">Añadir Juego</button>
                             </div>
                         </div>
 
@@ -159,6 +160,10 @@
                         <label for="game-name" class="block text-sm font-semibold text-slate-400 mb-1">Nombre del Juego</label>
                         <input type="text" id="game-name" placeholder="Ej: Catan" required class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
                     </div>
+                    <div class="md:col-span-2">
+                        <label for="game-description" class="block text-sm font-semibold text-slate-400 mb-1">Descripción</label>
+                        <textarea id="game-description" placeholder="Una breve descripción del juego..." rows="3" class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg"></textarea>
+                    </div>
                     <div>
                         <label for="game-players-min" class="block text-sm font-semibold text-slate-400 mb-1">Jugadores Mín.</label>
                         <input type="number" id="game-players-min" min="1" value="1" required class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
@@ -190,10 +195,6 @@
                     <div class="md:col-span-2">
                         <label for="game-image-url" class="block text-sm font-semibold text-slate-400 mb-1">URL de la Imagen</label>
                         <input type="url" id="game-image-url" placeholder="https://<project-ref>.supabase.co/storage/v1/object/public/..." class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
-                    </div>
-                    <div class="md:col-span-2">
-                        <label for="game-recommended" class="block text-sm font-semibold text-slate-400 mb-1">Recomendado por (separado por comas)</label>
-                        <input type="text" id="game-recommended" placeholder="Ej: Diego, Ana" required class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
                     </div>
                 </div>
                 <div class="mt-6">
@@ -232,8 +233,12 @@
 
                 <div class="space-y-4">
                     <div>
-                        <h4 class="text-lg font-semibold text-slate-300 mb-2 border-b border-slate-700 pb-1">Recomendado por</h4>
-                        <p id="modal-game-recommended" class="text-slate-400"></p>
+                        <h4 class="text-lg font-semibold text-slate-300 mb-2 border-b border-slate-700 pb-1">Descripción</h4>
+                        <p id="modal-game-description" class="text-slate-400 text-base italic"></p>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-slate-300 mb-2 border-b border-slate-700 pb-1">Añadido por</h4>
+                        <p id="modal-game-creator" class="text-slate-400"></p>
                     </div>
                     <div>
                         <h4 class="text-lg font-semibold text-slate-300 mb-2 border-b border-slate-700 pb-1">Comentarios</h4>
@@ -246,6 +251,24 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="edit-profile-modal" class="hidden modal fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 backdrop-filter backdrop-blur-sm">
+        <div class="bg-slate-800 p-8 rounded-lg shadow-xl w-full max-w-sm relative border border-slate-700">
+            <button id="close-edit-profile-modal-btn" class="absolute top-3 right-3 text-slate-400 hover:text-white transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+            <h2 class="text-2xl font-bold text-center text-slate-200 mb-6">EDITAR PERFIL</h2>
+            <form id="edit-profile-form">
+                <div class="mb-4">
+                    <label for="profile-username" class="block text-sm font-semibold text-slate-400 mb-2">Nombre de Usuario</label>
+                    <input type="text" id="profile-username" placeholder="Tu nombre de usuario" required class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg text-slate-200 focus:ring-2 focus:ring-violet-500 focus:border-violet-500">
+                </div>
+                <button type="submit" class="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">Guardar Cambios</button>
+                <p id="profile-error" class="text-red-400 text-sm mt-4 text-center hidden"></p>
+            </form>
         </div>
     </div>
 

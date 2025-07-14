@@ -41,7 +41,8 @@ const openGameDetailsModal = (game, currentUser) => {
     document.getElementById('modal-game-players').innerHTML = `<span><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" /></svg> ${game.players_min === game.players_max ? game.players_min : `${game.players_min}-${game.players_max}`} Jugadores</span>`;
     document.getElementById('modal-game-time').innerHTML = `<span><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.414-1.415L11 9.586V7z" clip-rule="evenodd" /></svg> ${game.time_min === game.time_max ? game.time_max : `${game.time_min}-${game.time_max}`} min</span>`;
     document.getElementById('modal-game-complexity').innerHTML = `<span class="complexity-badge complexity-${game.complexity}">${game.complexity}</span>`;
-    document.getElementById('modal-game-recommended').textContent = (Array.isArray(game.recommended_by) ? game.recommended_by : []).join(', ');
+    document.getElementById('modal-game-description').textContent = game.description || 'No hay descripción disponible.';
+    document.getElementById('modal-game-creator').textContent = game.profiles?.username || 'Desconocido';
 
     // Action Buttons
     const actionButtonsContainer = document.getElementById('modal-action-buttons');
