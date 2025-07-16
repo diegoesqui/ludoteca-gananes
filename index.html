@@ -242,13 +242,18 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
 
-            <!-- Left Side: Image -->
-            <div class="w-full md:w-2/5 flex-shrink-0 bg-slate-900 rounded-t-lg md:rounded-l-lg md:rounded-t-none">
-                <img id="modal-game-image" src="" alt="Carátula del juego" class="object-contain w-full h-64 md:h-full rounded-t-lg md:rounded-l-lg md:rounded-t-none">
+            <!-- Left Side: Image and Actions -->
+            <div class="w-full md:w-2/5 flex-shrink-0 bg-slate-900 rounded-t-lg md:rounded-l-lg md:rounded-t-none flex flex-col p-6 justify-between">
+                <div class="h-64 md:h-96 flex items-center justify-center flex-grow">
+                    <img id="modal-game-image" src="" alt="Carátula del juego" class="object-contain w-full h-full rounded-lg">
+                </div>
+                <div id="modal-action-buttons" class="flex flex-wrap gap-3 mt-4 justify-start">
+                    <!-- BGG Link and Edit/Delete buttons will be injected here -->
+                </div>
             </div>
 
             <!-- Right Side: Details -->
-            <div class="w-full md:w-3/5 p-6 md:p-8 overflow-y-auto">
+            <div class="w-full md:w-3/5 p-6 overflow-y-auto">
                 <h2 id="modal-game-title" class="text-3xl font-bold text-violet-400 mb-2"></h2>
                 <div class="flex items-center text-slate-400 text-sm mb-4 space-x-4 flex-wrap">
                     <span id="modal-game-players" class="mb-2"></span>
@@ -257,10 +262,6 @@
                 </div>
 
                 <div id="modal-game-tags" class="flex flex-wrap gap-2 mb-4"></div>
-
-                <div id="modal-action-buttons" class="flex flex-wrap gap-3 mb-6">
-                    <!-- BGG Link and Edit/Delete buttons will be injected here -->
-                </div>
 
                 <div class="space-y-6">
                     <div>
