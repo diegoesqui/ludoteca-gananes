@@ -244,22 +244,23 @@
 
             <!-- Left Side: Image and Actions -->
             <div class="w-full md:w-2/5 flex-shrink-0 bg-slate-900 rounded-t-lg md:rounded-l-lg md:rounded-t-none flex flex-col p-6 justify-between">
-                <div class="h-64 md:h-96 flex items-center justify-center flex-grow">
+                <div class="max-h-96 flex items-center justify-center">
                     <img id="modal-game-image" src="" alt="Carátula del juego" class="object-contain w-full h-full rounded-lg">
                 </div>
-                <div id="modal-action-buttons" class="flex flex-wrap gap-3 mt-4 justify-start">
+                <div id="modal-action-buttons" class="flex flex-wrap gap-3 mt-auto justify-start">
                     <!-- BGG Link and Edit/Delete buttons will be injected here -->
                 </div>
             </div>
 
             <!-- Right Side: Details -->
             <div class="w-full md:w-3/5 p-6 overflow-y-auto">
-                <h2 id="modal-game-title" class="text-3xl font-bold text-violet-400 mb-2"></h2>
-                <div class="flex items-center text-slate-400 text-sm mb-4 space-x-4 flex-wrap">
+                <h2 id="modal-game-title" class="text-3xl font-bold text-violet-400 mb-4"></h2>
+                <div id="game-info-line" class="flex items-center text-slate-400 text-sm mb-1 space-x-4 flex-wrap">
                     <span id="modal-game-players" class="mb-2"></span>
                     <span id="modal-game-time" class="mb-2"></span>
                     <span id="modal-game-complexity" class="mb-2"></span>
                 </div>
+                <div id="modal-game-creator-info" class="text-slate-400 text-sm mb-2"></div>
 
                 <div id="modal-game-tags" class="flex flex-wrap gap-2 mb-4"></div>
 
@@ -267,10 +268,6 @@
                     <div>
                         <h4 class="text-lg font-semibold text-slate-300 mb-2 border-b border-slate-700 pb-1">Descripción</h4>
                         <p id="modal-game-description" class="text-slate-400 text-base italic"></p>
-                    </div>
-                    <div>
-                        <h4 class="text-lg font-semibold text-slate-300 mb-2 border-b border-slate-700 pb-1">Añadido por</h4>
-                        <p id="modal-game-creator" class="text-slate-400"></p>
                     </div>
                     <div>
                         <h4 class="text-lg font-semibold text-slate-300 mb-2 border-b border-slate-700 pb-1">Comentarios</h4>
