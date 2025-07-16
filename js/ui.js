@@ -1,5 +1,6 @@
 const gameModal = document.getElementById('game-modal');
 const closeGameModalBtn = document.getElementById('close-game-modal-btn');
+const cancelGameFormBtn = document.getElementById('cancel-game-form-btn');
 const gameDetailsModal = document.getElementById('game-details-modal');
 const closeDetailsModalBtn = document.getElementById('close-details-modal-btn');
 const editProfileModal = document.getElementById('edit-profile-modal');
@@ -18,7 +19,11 @@ export const showModal = (modalId) => {
 };
 
 closeGameModalBtn.addEventListener('click', () => {
-    showModal('game-details-modal'); // Al cerrar el modal de edición, mostrar el de detalles
+    gameModal.classList.add('hidden');
+});
+
+cancelGameFormBtn.addEventListener('click', () => {
+    gameModal.classList.add('hidden');
 });
 closeDetailsModalBtn.addEventListener('click', () => showModal(null)); // Al cerrar el modal de detalles, ocultar todos
 closeEditProfileModalBtn.addEventListener('click', () => showModal(null)); // Al cerrar el modal de edición de perfil, ocultar todos

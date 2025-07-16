@@ -151,58 +151,72 @@
 
     <!-- Add/Edit Game Modal -->
     <div id="game-modal" class="hidden modal fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 backdrop-filter backdrop-blur-sm">
-        <div class="bg-slate-800 p-8 rounded-lg shadow-xl w-full max-w-2xl relative border border-slate-700 max-h-[90vh] overflow-y-auto">
+        <div class="bg-slate-800 p-8 rounded-lg shadow-xl w-full max-w-4xl relative border border-slate-700 max-h-[90vh] overflow-y-auto">
             <button id="close-game-modal-btn" class="absolute top-3 right-3 text-slate-400 hover:text-white transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
             <h2 id="game-modal-title" class="text-2xl font-bold text-center text-slate-200 mb-6">AÑADIR NUEVO JUEGO</h2>
             <form id="game-form">
                 <input type="hidden" id="game-id">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="md:col-span-2">
-                        <label for="game-name" class="block text-sm font-semibold text-slate-400 mb-1">Nombre del Juego</label>
-                        <input type="text" id="game-name" placeholder="Ej: Catan" required class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                    <!-- Columna Izquierda: Info Principal -->
+                    <div class="space-y-4">
+                        <div>
+                            <label for="game-name" class="block text-sm font-semibold text-slate-400 mb-1">Nombre del Juego</label>
+                            <input type="text" id="game-name" placeholder="Ej: Catan" required class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="game-description" class="block text-sm font-semibold text-slate-400 mb-1">Descripción</label>
+                            <textarea id="game-description" placeholder="Una breve descripción del juego..." rows="5" class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg"></textarea>
+                        </div>
+                        <div>
+                            <label for="game-image-url" class="block text-sm font-semibold text-slate-400 mb-1">URL de la Imagen</label>
+                            <input type="url" id="game-image-url" placeholder="https://..." class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
+                        </div>
                     </div>
-                    <div class="md:col-span-2">
-                        <label for="game-description" class="block text-sm font-semibold text-slate-400 mb-1">Descripción</label>
-                        <textarea id="game-description" placeholder="Una breve descripción del juego..." rows="3" class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg"></textarea>
-                    </div>
-                    <div>
-                        <label for="game-players-min" class="block text-sm font-semibold text-slate-400 mb-1">Jugadores Mín.</label>
-                        <input type="number" id="game-players-min" min="1" value="1" required class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
-                    </div>
-                    <div>
-                        <label for="game-players-max" class="block text-sm font-semibold text-slate-400 mb-1">Jugadores Máx.</label>
-                        <input type="number" id="game-players-max" min="1" value="4" required class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
-                    </div>
-                    <div>
-                        <label for="game-time-min" class="block text-sm font-semibold text-slate-400 mb-1">Tiempo Mín. (min)</label>
-                        <input type="number" id="game-time-min" min="5" step="5" value="30" required class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
-                    </div>
-                    <div>
-                        <label for="game-time-max" class="block text-sm font-semibold text-slate-400 mb-1">Tiempo Máx. (min)</label>
-                        <input type="number" id="game-time-max" min="5" step="5" value="60" required class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
-                    </div>
-                    <div class="md:col-span-2">
-                        <label for="game-complexity" class="block text-sm font-semibold text-slate-400 mb-1">Complejidad</label>
-                        <select id="game-complexity" required class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
-                            <option value="facil">Fácil</option>
-                            <option value="medio">Medio</option>
-                            <option value="avanzado">Avanzado</option>
-                        </select>
-                    </div>
-                    <div class="md:col-span-2">
-                        <label for="game-bgg" class="block text-sm font-semibold text-slate-400 mb-1">URL (BoardGameGeek)</label>
-                        <input type="url" id="game-bgg" placeholder="https://boardgamegeek.com/..." class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
-                    </div>
-                    <div class="md:col-span-2">
-                        <label for="game-image-url" class="block text-sm font-semibold text-slate-400 mb-1">URL de la Imagen</label>
-                        <input type="url" id="game-image-url" placeholder="https://<project-ref>.supabase.co/storage/v1/object/public/..." class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
+
+                    <!-- Columna Derecha: Atributos -->
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="game-players-min" class="block text-sm font-semibold text-slate-400 mb-1">Jugadores Mín.</label>
+                                <input type="number" id="game-players-min" min="1" value="1" required class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
+                            </div>
+                            <div>
+                                <label for="game-players-max" class="block text-sm font-semibold text-slate-400 mb-1">Jugadores Máx.</label>
+                                <input type="number" id="game-players-max" min="1" value="4" required class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="game-time-min" class="block text-sm font-semibold text-slate-400 mb-1">Tiempo Mín. (min)</label>
+                                <input type="number" id="game-time-min" min="5" step="5" value="30" required class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
+                            </div>
+                            <div>
+                                <label for="game-time-max" class="block text-sm font-semibold text-slate-400 mb-1">Tiempo Máx. (min)</label>
+                                <input type="number" id="game-time-max" min="5" step="5" value="60" required class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="game-complexity" class="block text-sm font-semibold text-slate-400 mb-1">Complejidad</label>
+                            <select id="game-complexity" required class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
+                                <option value="facil">Fácil</option>
+                                <option value="medio">Medio</option>
+                                <option value="avanzado">Avanzado</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="game-bgg" class="block text-sm font-semibold text-slate-400 mb-1">URL (BoardGameGeek)</label>
+                            <input type="url" id="game-bgg" placeholder="https://boardgamegeek.com/..." class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
+                        </div>
                     </div>
                 </div>
-                <div class="mt-6">
-                    <button type="submit" class="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">Guardar Juego</button>
-                    <p id="game-error" class="text-red-400 text-sm mt-4 text-center hidden"></p>
+
+                <!-- Botones de Acción -->
+                <div class="mt-8 flex justify-end items-center gap-4">
+                    <p id="game-error" class="text-red-400 text-sm mr-auto hidden"></p>
+                    <button type="button" id="cancel-game-form-btn" class="btn bg-transparent border border-slate-600 hover:bg-slate-700 hover:border-slate-500 text-slate-300 font-bold py-2 px-4 rounded-lg transition-colors">Cancelar</button>
+                    <button type="submit" class="btn bg-violet-600 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">Guardar Juego</button>
                 </div>
             </form>
         </div>
