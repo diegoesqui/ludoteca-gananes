@@ -15,6 +15,9 @@ const gameForm = document.getElementById('game-form');
 const gameError = document.getElementById('game-error');
 const gameModalTitle = document.getElementById('game-modal-title');
 const gameIdInput = document.getElementById('game-id');
+const gameImageUrlInput = document.getElementById('game-image-url');
+const gameImagePreview = document.getElementById('game-image-preview');
+const gameImagePlaceholder = document.getElementById('game-image-placeholder');
 const closeGameModalBtn = document.getElementById('close-game-modal-btn');
 const sortBySelect = document.getElementById('sort-by');
 const addGameBtn = document.getElementById('add-game-btn');
@@ -113,6 +116,18 @@ closeGameModalBtn.addEventListener('click', () => {
     gameModal.classList.add('hidden');
 });
 
+gameImageUrlInput.addEventListener('input', () => {
+    const url = gameImageUrlInput.value.trim();
+    if (url) {
+        gameImagePreview.src = url;
+        gameImagePreview.classList.remove('hidden');
+        gameImagePlaceholder.classList.add('hidden');
+    } else {
+        gameImagePreview.classList.add('hidden');
+        gameImagePlaceholder.classList.remove('hidden');
+    }
+});
+
 gameForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -174,7 +189,6 @@ document.getElementById('game-details-modal').addEventListener('click', async (e
         const gameId = editBtn.dataset.id;
         const gameData = masterGameList.find(g => g.id == gameId);
         if (gameData) {
-            showModal('game-modal'); // Mostrar el modal de edición
             gameModalTitle.textContent = 'EDITAR JUEGO';
             gameIdInput.value = gameData.id;
             document.getElementById('game-name').value = gameData.name;
@@ -185,9 +199,22 @@ document.getElementById('game-details-modal').addEventListener('click', async (e
             document.getElementById('game-time-max').value = gameData.time_max;
             document.getElementById('game-complexity').value = gameData.complexity;
             document.getElementById('game-bgg').value = gameData.bgg_url || '';
-            document.getElementById('game-image-url').value = gameData.image_url || '';
+            gameImageUrlInput.value = gameData.image_url || '';
             gameError.classList.add('hidden');
-            gameModal.classList.remove('hidden');
+
+            // Update image preview
+            const imageUrl = gameImageUrlInput.value.trim();
+            if (imageUrl) {
+                gameImagePreview.src = imageUrl;
+                gameImagePreview.classList.remove('hidden');
+                gameImagePlaceholder.classList.add('hidden');
+            } else {
+                gameImagePreview.src = '';
+                gameImagePreview.classList.add('hidden');
+                gameImagePlaceholder.classList.remove('hidden');
+            }
+
+            showModal('game-modal');
         }
     }
     if (deleteBtn) {
@@ -364,10 +391,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Event listener for Add Game button
     addGameBtn.addEventListener('click', () => {
-        document.getElementById('game-modal-title').textContent = 'AÑADIR NUEVO JUEGO';
-        document.getElementById('game-form').reset();
-        document.getElementById('game-id').value = '';
-        document.getElementById('game-error').classList.add('hidden');
+        gameModalTitle.textContent = 'AÑADIR NUEVO JUEGO';
+        gameForm.reset();
+        gameIdInput.value = '';
+        gameError.classList.add('hidden');
+
+        // Reset image preview
+        gameImagePreview.src = '';
+        gameImagePreview.classList.add('hidden');
+        gameImagePlaceholder.classList.remove('hidden');
+
         showModal('game-modal');
     });
 

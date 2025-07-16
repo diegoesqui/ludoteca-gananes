@@ -158,25 +158,24 @@
             <h2 id="game-modal-title" class="text-2xl font-bold text-center text-slate-200 mb-6">AÑADIR NUEVO JUEGO</h2>
             <form id="game-form">
                 <input type="hidden" id="game-id">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-                    <!-- Columna Izquierda: Info Principal -->
-                    <div class="space-y-4">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-6">
+                    <!-- Columna Izquierda: Imagen -->
+                    <div class="lg:col-span-1">
+                        <label class="block text-sm font-semibold text-slate-400 mb-2">Imagen del Juego</label>
+                        <div class="aspect-w-1 aspect-h-1 bg-slate-700 rounded-lg flex items-center justify-center">
+                            <img id="game-image-preview" src="" alt="Vista previa de la imagen" class="object-cover w-full h-full rounded-lg hidden">
+                            <span id="game-image-placeholder" class="text-slate-500 text-center p-4">Pega una URL para ver una vista previa</span>
+                        </div>
+                        <input type="url" id="game-image-url" placeholder="https://..." class="w-full p-2 mt-2 bg-slate-900 border border-slate-600 rounded-lg text-sm"/>
+                    </div>
+
+                    <!-- Columna Derecha: Campos del Formulario -->
+                    <div class="lg:col-span-2 space-y-4">
                         <div>
                             <label for="game-name" class="block text-sm font-semibold text-slate-400 mb-1">Nombre del Juego</label>
                             <input type="text" id="game-name" placeholder="Ej: Catan" required class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
                         </div>
-                        <div>
-                            <label for="game-description" class="block text-sm font-semibold text-slate-400 mb-1">Descripción</label>
-                            <textarea id="game-description" placeholder="Una breve descripción del juego..." rows="5" class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg"></textarea>
-                        </div>
-                        <div>
-                            <label for="game-image-url" class="block text-sm font-semibold text-slate-400 mb-1">URL de la Imagen</label>
-                            <input type="url" id="game-image-url" placeholder="https://..." class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
-                        </div>
-                    </div>
 
-                    <!-- Columna Derecha: Atributos -->
-                    <div class="space-y-4">
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label for="game-players-min" class="block text-sm font-semibold text-slate-400 mb-1">Jugadores Mín.</label>
@@ -187,6 +186,7 @@
                                 <input type="number" id="game-players-max" min="1" value="4" required class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
                             </div>
                         </div>
+
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label for="game-time-min" class="block text-sm font-semibold text-slate-400 mb-1">Tiempo Mín. (min)</label>
@@ -197,6 +197,7 @@
                                 <input type="number" id="game-time-max" min="5" step="5" value="60" required class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
                             </div>
                         </div>
+
                         <div>
                             <label for="game-complexity" class="block text-sm font-semibold text-slate-400 mb-1">Complejidad</label>
                             <select id="game-complexity" required class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
@@ -205,6 +206,12 @@
                                 <option value="avanzado">Avanzado</option>
                             </select>
                         </div>
+
+                        <div>
+                            <label for="game-description" class="block text-sm font-semibold text-slate-400 mb-1">Descripción</label>
+                            <textarea id="game-description" placeholder="Una breve descripción del juego..." rows="3" class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg"></textarea>
+                        </div>
+
                         <div>
                             <label for="game-bgg" class="block text-sm font-semibold text-slate-400 mb-1">URL (BoardGameGeek)</label>
                             <input type="url" id="game-bgg" placeholder="https://boardgamegeek.com/..." class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">

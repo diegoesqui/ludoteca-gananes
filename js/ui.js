@@ -16,6 +16,10 @@ export const showModal = (modalId) => {
             modal.classList.add('hidden');
         }
     });
+
+    if (modalId === 'game-modal') {
+        document.getElementById('game-details-modal').classList.add('hidden');
+    }
 };
 
 closeGameModalBtn.addEventListener('click', () => {
