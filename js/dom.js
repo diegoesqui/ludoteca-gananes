@@ -101,12 +101,14 @@ const openGameDetailsModal = (game, currentUser) => {
             <div class="comment-wrapper bg-slate-900/50 p-3 rounded-lg" data-comment-id="${comment.id}">
                 <div class="flex justify-between items-start">
                     <div class="flex-grow">
-                        <span class="font-semibold text-slate-300">${comment.profiles?.username || 'Anónimo'}</span>
-                        <div class="comment-content text-slate-400 italic my-1">“${comment.content}”</div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="font-semibold text-slate-300">${comment.profiles?.username || 'Anónimo'}</span>
+                            <span class="text-xs text-slate-500">${timestamp}${editedMark}</span>
+                        </div>
+                        <div class="comment-content text-slate-400 italic">“${comment.content}”</div>
                     </div>
                     ${ownerActions}
                 </div>
-                <div class="text-right text-xs text-slate-500 mt-1">${timestamp}${editedMark}</div>
             </div>
             `;
         }).join('')
