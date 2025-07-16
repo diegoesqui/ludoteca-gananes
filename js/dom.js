@@ -41,6 +41,26 @@ const openGameDetailsModal = (game, currentUser) => {
     document.getElementById('modal-game-players').innerHTML = `<span><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" /></svg> ${game.players_min === game.players_max ? game.players_min : `${game.players_min}-${game.players_max}`} Jugadores</span>`;
     document.getElementById('modal-game-time').innerHTML = `<span><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.414-1.415L11 9.586V7z" clip-rule="evenodd" /></svg> ${game.time_min === game.time_max ? game.time_max : `${game.time_min}-${game.time_max}`} min</span>`;
     document.getElementById('modal-game-complexity').innerHTML = `<span class="complexity-badge complexity-${game.complexity}">${game.complexity}</span>`;
+
+    // Display Tags
+    const tagsContainer = document.getElementById('modal-game-tags');
+    tagsContainer.innerHTML = '';
+    if (game.tags) {
+        // Ensure game.tags is an array, converting from string if necessary
+        const gameTagsArray = Array.isArray(game.tags)
+            ? game.tags
+            : String(game.tags).split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+
+        if (gameTagsArray.length > 0) {
+            gameTagsArray.forEach(tag => {
+                const tagSpan = document.createElement('span');
+                tagSpan.className = 'bg-slate-700 text-slate-300 text-xs px-2 py-1 rounded-full';
+                tagSpan.textContent = tag;
+                tagsContainer.appendChild(tagSpan);
+            });
+        }
+    }
+
     document.getElementById('modal-game-description').textContent = game.description || 'No hay descripción disponible.';
     document.getElementById('modal-game-creator').textContent = game.profiles?.username || 'Desconocido';
 

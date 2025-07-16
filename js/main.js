@@ -36,7 +36,7 @@ const fetchAllGames = async () => {
     errorMessage.classList.add('hidden');
     gameGrid.innerHTML = '';
 
-    const { data, error } = await supabase.from('juegos').select('*, comentarios(*, profiles(username)), profiles!juegos_created_by_fkey(username)').order('name', { ascending: true });
+    const { data, error } = await supabase.from('juegos').select('*, comentarios(*, profiles(username)), profiles!juegos_created_by_fkey(username), tags').order('name', { ascending: true });
 
     loaderContainer.classList.add('hidden');
     if (error) {
@@ -146,6 +146,7 @@ gameForm.addEventListener('submit', async (e) => {
         complexity: document.getElementById('game-complexity').value,
         bgg_url: document.getElementById('game-bgg').value || null,
         image_url: document.getElementById('game-image-url').value || null,
+        tags: document.getElementById('game-tags').value.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0),
     };
 
     let error;
@@ -200,6 +201,10 @@ document.getElementById('game-details-modal').addEventListener('click', async (e
             document.getElementById('game-complexity').value = gameData.complexity;
             document.getElementById('game-bgg').value = gameData.bgg_url || '';
             gameImageUrlInput.value = gameData.image_url || '';
+            const gameTagsArray = Array.isArray(gameData.tags)
+                ? gameData.tags
+                : String(gameData.tags || '').split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+            document.getElementById('game-tags').value = gameTagsArray.join(', ');
             gameError.classList.add('hidden');
 
             // Update image preview
@@ -400,6 +405,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         gameImagePreview.src = '';
         gameImagePreview.classList.add('hidden');
         gameImagePlaceholder.classList.remove('hidden');
+
+        // Reset tags input
+        document.getElementById('game-tags').value = '';
 
         showModal('game-modal');
     });

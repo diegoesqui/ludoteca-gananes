@@ -77,6 +77,10 @@ const applyFilters = (masterGameList, renderGames, sortOrder) => {
 
     let filteredGames = masterGameList.filter(game => {
         const nameMatch = game.name.toLowerCase().includes(searchTerm);
+        const gameTagsArray = Array.isArray(game.tags)
+            ? game.tags
+            : String(game.tags || '').split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+        const tagsMatch = gameTagsArray.some(tag => tag.toLowerCase().includes(searchTerm));
         
         const playersMatch = !players || (game.players_min <= players && game.players_max >= players) || (selectedPlayers === '5+' && game.players_max >= 5);
         const timeMatch = selectedTime === 'Todos' ||
@@ -88,7 +92,7 @@ const applyFilters = (masterGameList, renderGames, sortOrder) => {
         const complexityMatch = selectedComplexities.includes('Todos') || selectedComplexities.length === 0 || selectedComplexities.includes(game.complexity);
         
         
-        return nameMatch && playersMatch && timeMatch && complexityMatch;
+        return (nameMatch || tagsMatch) && playersMatch && timeMatch && complexityMatch;
     });
 
     // Sorting logic

@@ -208,6 +208,11 @@
                         </div>
 
                         <div>
+                            <label for="game-tags" class="block text-sm font-semibold text-slate-400 mb-1">Etiquetas (separadas por comas)</label>
+                            <input type="text" id="game-tags" placeholder="Ej: Estrategia, Familiar, Cartas" class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg">
+                        </div>
+
+                        <div>
                             <label for="game-description" class="block text-sm font-semibold text-slate-400 mb-1">Descripción</label>
                             <textarea id="game-description" placeholder="Una breve descripción del juego..." rows="3" class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg"></textarea>
                         </div>
@@ -250,6 +255,8 @@
                     <span id="modal-game-time" class="mb-2"></span>
                     <span id="modal-game-complexity" class="mb-2"></span>
                 </div>
+
+                <div id="modal-game-tags" class="flex flex-wrap gap-2 mb-4"></div>
 
                 <div id="modal-action-buttons" class="flex flex-wrap gap-3 mb-6">
                     <!-- BGG Link and Edit/Delete buttons will be injected here -->
