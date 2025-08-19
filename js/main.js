@@ -416,4 +416,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     loginBtn.addEventListener('click', () => {
         showModal('login-modal');
     });
+
+    // Mobile filter toggle
+    const mobileFilterToggle = document.getElementById('mobile-filter-toggle');
+    const filterBar = document.getElementById('filter-bar');
+    mobileFilterToggle.addEventListener('click', () => {
+        filterBar.classList.toggle('hidden');
+    });
 });
