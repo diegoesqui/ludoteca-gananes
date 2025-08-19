@@ -416,4 +416,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     loginBtn.addEventListener('click', () => {
         showModal('login-modal');
     });
+
+    // Mobile filter toggle
+    const mobileFilterToggle = document.getElementById('mobile-filter-toggle');
+    const closeFiltersBtn = document.getElementById('close-filters-btn');
+    const filterBar = document.getElementById('filter-bar');
+    mobileFilterToggle.addEventListener('click', () => {
+        filterBar.classList.remove('hidden');
+        filterBar.classList.add('flex');
+    });
+    closeFiltersBtn.addEventListener('click', () => {
+        filterBar.classList.add('hidden');
+        filterBar.classList.remove('flex');
+    });
 });
