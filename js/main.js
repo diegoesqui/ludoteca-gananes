@@ -422,11 +422,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const closeFiltersBtn = document.getElementById('close-filters-btn');
     const filterBar = document.getElementById('filter-bar');
     mobileFilterToggle.addEventListener('click', () => {
-        filterBar.classList.remove('hidden');
-        filterBar.classList.add('flex');
+        filterBar.classList.toggle('hidden');
     });
     closeFiltersBtn.addEventListener('click', () => {
-        filterBar.classList.add('hidden');
-        filterBar.classList.remove('flex');
+        filterBar.classList.toggle('hidden');
     });
 });
