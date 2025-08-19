@@ -419,12 +419,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Mobile filter toggle
     const mobileFilterToggle = document.getElementById('mobile-filter-toggle');
-    const closeFiltersBtn = document.getElementById('close-filters-btn');
     const filterBar = document.getElementById('filter-bar');
     mobileFilterToggle.addEventListener('click', () => {
-        filterBar.classList.toggle('hidden');
-    });
-    closeFiltersBtn.addEventListener('click', () => {
         filterBar.classList.toggle('hidden');
     });
 });
