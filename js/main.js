@@ -3,7 +3,7 @@ import { currentUser, updateAuthUI } from './auth.js';
 import { debounce } from './utils.js';
 import { applyFilters, populateFilters, clearFiltersBtn, searchInput, playersInput, complexityPopover, playersPopover, timePopover } from './filters.js';
 import { renderGames, openGameDetailsModal, gameGrid, loaderContainer, noResultsMessage, errorMessage, rlsTip } from './dom.js';
-import { showModal } from './ui.js';
+import { showModal, initializeScrollToTop } from './ui.js';
 
 // --- GLOBAL STATE ---
 let masterGameList = [];
@@ -393,6 +393,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const sessionData = await supabase.auth.getSession();
     updateAuthUI(sessionData.data.session ? sessionData.data.session.user : null);
     await fetchAllGames();
+    initializeScrollToTop();
 
     // Event listener for Add Game button
     addGameBtn.addEventListener('click', () => {
