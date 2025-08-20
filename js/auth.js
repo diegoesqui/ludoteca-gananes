@@ -33,7 +33,7 @@ const updateAuthUI = async (user) => {
         }
 
         // Update content and visibility for logged-in state
-        userEmailDisplay.textContent = currentUser.username || currentUser.email;
+        userEmailDisplay.textContent = `Hola, ${currentUser.username || currentUser.email}`;
         userEmailDisplay.classList.remove('hidden');
 
         editProfileBtn.classList.remove('hidden');

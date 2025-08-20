@@ -130,7 +130,7 @@ const populateFilters = (games) => {
     const orderedComplexities = ['facil', 'medio', 'avanzado'].filter(c => complexities.includes(c));
     complexityPopover.innerHTML = `
         ${orderedComplexities.map(c => `
-            <label class="flex items-center text-slate-400 hover:text-violet-400 cursor-pointer">
+            <label class="flex items-center py-1 text-slate-400 hover:text-violet-400 cursor-pointer">
                 <input type="checkbox" name="complexity" value="${c}" class="mr-2 form-checkbox text-violet-600 rounded focus:ring-violet-500"> ${c}
             </label>
         `).join('')}
