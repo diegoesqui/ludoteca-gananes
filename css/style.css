@@ -83,3 +83,7 @@
         #filter-bar.hidden-bar {
             transform: translateY(-120%);
         }
+        #scroll-to-top-btn {
+            z-index: 40;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
