@@ -20,16 +20,22 @@
 
     <div class="">
         <div class="container mx-auto p-4 md:p-8">
-            <header class="relative text-left mb-12 flex items-center">
-                
-                <div>
+            <header class="flex flex-col md:flex-row md:justify-between items-center text-center md:text-left mb-12">
+                <!-- Title and Subtitle -->
+                <div class="order-2 md:order-1">
                     <h1 class="text-4xl md:text-5xl font-bold text-violet-400 mb-2">LUDOTECA GAÑANES</h1>
                     <p class="text-slate-400 max-w-3xl">Descubre tu próxima obsesión en la ludoteca de juegos de mesa de los Gañanes Frikis.</p>
                 </div>
-                <div id="auth-container" class="absolute top-0 right-0 z-10 flex items-center gap-2">
+                <!-- Auth Container -->
+                <div id="auth-container" class="order-1 md:order-2 mb-4 md:mb-0 z-10 flex items-center gap-2">
                     <!-- Auth content will be managed by JS -->
                     <span id="user-email-display" class="text-sm text-slate-400 hidden"></span>
-                    <button id="edit-profile-btn" class="hidden btn bg-transparent border-slate-600 hover:bg-slate-800 hover:border-violet-400 text-slate-300 py-1 px-3 rounded-lg text-sm">Editar Perfil</button>
+                    <button id="edit-profile-btn" class="hidden btn bg-transparent border-slate-600 hover:bg-slate-800 hover:border-violet-400 text-slate-300 p-2 rounded-lg text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
+                            <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
                     <button id="logout-btn" class="hidden btn bg-transparent border-slate-600 hover:bg-slate-800 hover:border-violet-400 text-slate-300 py-1 px-3 rounded-lg text-sm">Logout</button>
                     <button id="login-btn" class="hidden btn bg-transparent border-slate-600 hover:bg-slate-800 hover:border-violet-400 text-slate-300 py-1 px-3 rounded-lg text-sm">Login</button>
                 </div>
@@ -57,7 +63,7 @@
                         </div>
                         <!-- Filter Bar -->
                         <div id="filter-bar" class="hidden flex-col md:flex-row md:flex-wrap items-stretch md:items-center gap-4 md:flex md:sticky top-0 z-30 bg-slate-800/80 md:bg-slate-800/50 border border-slate-700 p-4 rounded-xl shadow-lg mb-8 backdrop-filter backdrop-blur-sm">
-                            <div class="flex-grow w-full">
+                            <div class="flex-grow w-full mb-2 md:mb-0">
                                 <input type="search" id="search-input" placeholder="🔍 Buscar por nombre..." class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg text-slate-200 focus:ring-2 focus:ring-violet-500 focus:border-violet-500">
                             </div>
                             <div class="flex flex-col md:flex-row md:flex-wrap gap-2">
@@ -249,32 +255,34 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
 
-            <!-- Left Side: Image and Actions -->
-            <div class="w-full md:w-2/5 flex-shrink-0 bg-slate-900 rounded-t-lg md:rounded-l-lg md:rounded-t-none flex flex-col p-6 justify-between">
-                <div class="max-h-96 flex items-center justify-center">
-                    <img id="modal-game-image" src="" alt="Carátula del juego" class="object-contain w-full h-full rounded-lg">
-                </div>
-                <div id="modal-action-buttons" class="flex flex-wrap gap-3 mt-auto justify-start">
-                    <!-- BGG Link and Edit/Delete buttons will be injected here -->
-                </div>
+            <!-- Left Side: Image -->
+            <div class="w-full md:w-2/5 flex-shrink-0 bg-slate-900 rounded-t-lg md:rounded-l-lg md:rounded-t-none">
+                <img id="modal-game-image" src="" alt="Carátula del juego" class="object-contain w-full h-64 md:h-full rounded-t-lg md:rounded-l-lg md:rounded-t-none">
             </div>
 
             <!-- Right Side: Details -->
-            <div class="w-full md:w-3/5 p-6 overflow-y-auto">
-                <h2 id="modal-game-title" class="text-3xl font-bold text-violet-400 mb-4"></h2>
-                <div id="game-info-line" class="flex items-center text-slate-400 text-sm mb-1 space-x-4 flex-wrap">
+            <div class="w-full md:w-3/5 p-6 md:p-8 overflow-y-auto">
+                <h2 id="modal-game-title" class="text-3xl font-bold text-violet-400 mb-2"></h2>
+                <div class="flex items-center text-slate-400 text-sm mb-4 space-x-4 flex-wrap">
                     <span id="modal-game-players" class="mb-2"></span>
                     <span id="modal-game-time" class="mb-2"></span>
                     <span id="modal-game-complexity" class="mb-2"></span>
                 </div>
-                <div id="modal-game-creator-info" class="text-slate-400 text-sm mb-2"></div>
 
                 <div id="modal-game-tags" class="flex flex-wrap gap-2 mb-4"></div>
+
+                <div id="modal-action-buttons" class="flex flex-wrap gap-3 mb-6">
+                    <!-- BGG Link and Edit/Delete buttons will be injected here -->
+                </div>
 
                 <div class="space-y-6">
                     <div>
                         <h4 class="text-lg font-semibold text-slate-300 mb-2 border-b border-slate-700 pb-1">Descripción</h4>
                         <p id="modal-game-description" class="text-slate-400 text-base italic"></p>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-slate-300 mb-2 border-b border-slate-700 pb-1">Añadido por</h4>
+                        <p id="modal-game-creator" class="text-slate-400"></p>
                     </div>
                     <div>
                         <h4 class="text-lg font-semibold text-slate-300 mb-2 border-b border-slate-700 pb-1">Comentarios</h4>
