@@ -42,10 +42,6 @@ const openGameDetailsModal = (game, currentUser) => {
     document.getElementById('modal-game-time').innerHTML = `<span><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.414-1.415L11 9.586V7z" clip-rule="evenodd" /></svg> ${game.time_min === game.time_max ? game.time_max : `${game.time_min}-${game.time_max}`} min</span>`;
     document.getElementById('modal-game-complexity').innerHTML = `<span class="complexity-badge complexity-${game.complexity}">${game.complexity}</span>`;
 
-    // Display creator info discreetly
-    const creatorInfoElement = document.getElementById('modal-game-creator-info');
-    creatorInfoElement.textContent = game.profiles?.username ? `Añadido por ${game.profiles.username}` : '';
-
     // Display Tags
     const tagsContainer = document.getElementById('modal-game-tags');
     tagsContainer.innerHTML = '';
@@ -66,6 +62,7 @@ const openGameDetailsModal = (game, currentUser) => {
     }
 
     document.getElementById('modal-game-description').textContent = game.description || 'No hay descripción disponible.';
+    document.getElementById('modal-game-creator').textContent = game.profiles?.username || 'Desconocido';
 
     // Action Buttons
     const actionButtonsContainer = document.getElementById('modal-action-buttons');
@@ -101,14 +98,12 @@ const openGameDetailsModal = (game, currentUser) => {
             <div class="comment-wrapper bg-slate-900/50 p-3 rounded-lg" data-comment-id="${comment.id}">
                 <div class="flex justify-between items-start">
                     <div class="flex-grow">
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="font-semibold text-slate-300">${comment.profiles?.username || 'Anónimo'}</span>
-                            <span class="text-xs text-slate-500">${timestamp}${editedMark}</span>
-                        </div>
-                        <div class="comment-content text-slate-400 italic">“${comment.content}”</div>
+                        <span class="font-semibold text-slate-300">${comment.profiles?.username || 'Anónimo'}</span>
+                        <div class="comment-content text-slate-400 italic my-1">“${comment.content}”</div>
                     </div>
                     ${ownerActions}
                 </div>
+                <div class="text-right text-xs text-slate-500 mt-1">${timestamp}${editedMark}</div>
             </div>
             `;
         }).join('')
